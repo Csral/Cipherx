@@ -1,9 +1,8 @@
 package com.godgamer;
 
-import javafx.event.ActionEvent;
-
 public class DecryptionSceneController {
-    public void backToMain(ActionEvent e) throws Exception {
+    // accept ActionEvent e as parameter to get the source of the event such as stage, scene, etc.
+    public void backToMain() throws Exception {
         App.setRoot("MainScene");
     }
 }

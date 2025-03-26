@@ -16,7 +16,8 @@ public class App extends Application {
 
     private static Scene scene;
     private static String css;
-    private static enum ext {
+
+    private static enum IMAGE_EXTENSIONS {
         png,
         jpg
     }
@@ -42,7 +43,7 @@ public class App extends Application {
         scene.getStylesheets().add(css);
 
         // setting up the stage prerequisites
-        Image icon = getImage("icon", ext.jpg.toString()); // for app icon
+        Image icon = getImage("icon", IMAGE_EXTENSIONS.jpg.toString()); // for app icon
         stage.getIcons().add(icon);
         stage.setTitle("CipherX");
         stage.setMinWidth(600);
