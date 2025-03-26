@@ -15,34 +15,49 @@ import javafx.stage.Stage;
 public class App extends Application {
 
     private static Scene scene;
-    private enum ext {
+    private static String css;
+    private static enum ext {
         png,
         jpg
     }
     
+    // get image as JavaFX Image
     private static Image getImage(String img, String ext) {
-        return new Image(App.class.getResource("Images/" + img + "." + ext).toString());
+        return new Image(App.class.getResource("Images/" + img + "." + ext).toExternalForm());
     }
+
+    // get css address as string
+    private static String getCSS(String css) {
+        return App.class.getResource("Styles/" + css + ".css").toExternalForm();
+    }
+
     @Override
     public void start(Stage stage) throws IOException {
+        // the main scene
         Parent root = loadFXML("MainScene");
         scene = new Scene(root);
-        // scene = new Scene(loadFXML("primary"), 640, 480);
-        Image icon = getImage("icon", ext.jpg.toString());
+
+        // adding css stylesheet
+        css = getCSS("Application");
+        scene.getStylesheets().add(css);
+
+        // setting up the stage prerequisites
+        Image icon = getImage("icon", ext.jpg.toString()); // for app icon
         stage.getIcons().add(icon);
         stage.setTitle("CipherX");
-        // stage.setResizable(false);
         stage.setMinWidth(600);
         stage.setMinHeight(400);
         stage.setScene(scene);
         stage.show();
     }
 
-    // static void setRoot(String fxml) throws IOException {
-    //     scene.setRoot(loadFXML(fxml));
-    // }
+    // to change scenes
+    static void setRoot(String fxml) throws IOException {
+        scene.setRoot(loadFXML(fxml));
+    }
 
-    private static Parent loadFXML(String fxml) throws IOException {
+    // load new scene's fxml
+    public static Parent loadFXML(String fxml) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("Scenes/" + fxml + ".fxml"));
         return fxmlLoader.load();
     }
