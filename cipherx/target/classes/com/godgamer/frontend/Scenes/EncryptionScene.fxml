@@ -5,33 +5,61 @@
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.godgamer.frontend.EncryptionSceneController">
    <children>
-      <Label alignment="CENTER" layoutX="149.0" layoutY="17.0" prefHeight="18.0" prefWidth="302.0" text="Encryption" />
+      <Label alignment="CENTER" layoutX="149.0" layoutY="17.0" prefHeight="18.0" prefWidth="302.0" text="Encryption">
+         <font>
+            <Font size="13.0" />
+         </font></Label>
       <Button id="backBtn" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#backToMain" text="Back" />
-      <CheckBox id="verifiedCB" layoutX="74.0" layoutY="98.0" mnemonicParsing="false" text="Only Verified Algorithm" />
-      <PasswordField id="passwordTB" layoutX="162.0" layoutY="126.0" />
-      <Label layoutX="74.0" layoutY="127.0" text="Password" />
-      <ChoiceBox id="algTypeCombo" layoutX="162.0" layoutY="161.0" prefWidth="150.0" />
-      <Label layoutX="73.0" layoutY="162.0" text="Algorithm Type" />
+      <CheckBox id="verifiedCB" fx:id="verifiedAlgCB" layoutX="74.0" layoutY="100.0" mnemonicParsing="false" onAction="#changeAlgorithmList" text="Only Verified Algorithm">
+         <font>
+            <Font size="13.0" />
+         </font></CheckBox>
+      <PasswordField id="passwordTB" fx:id="passwordTB" layoutX="179.0" layoutY="128.0" prefHeight="26.0" prefWidth="150.0" promptText="Encryption Password" />
+      <TextField id="passwordShowTB" fx:id="passwordShowTB" layoutX="179.0" layoutY="128.0" prefHeight="26.0" prefWidth="150.0" />
+      <Label layoutX="74.0" layoutY="129.0" text="Password">
+         <font>
+            <Font size="13.0" />
+         </font></Label>
+      <ChoiceBox id="algTypeCombo" fx:id="algTypeCombo" layoutX="179.0" layoutY="163.0" prefWidth="150.0" />
+      <Label layoutX="73.0" layoutY="167.0" text="Algorithm Type">
+         <font>
+            <Font size="13.0" />
+         </font></Label>
       <Pane id="InputPane" layoutX="-3.0" layoutY="55.0" prefHeight="42.0" prefWidth="606.0">
          <children>
-            <TextField layoutX="76.0" layoutY="9.0" prefHeight="25.0" prefWidth="446.0" />
-            <Button id="browseBtn" layoutX="533.0" layoutY="9.0" mnemonicParsing="false" text="Browse" />
+            <TextField fx:id="inputTB" layoutX="76.0" layoutY="9.0" prefHeight="25.0" prefWidth="446.0" />
+            <Button id="browseBtn" fx:id="browseBtn" layoutX="533.0" layoutY="9.0" mnemonicParsing="false" onAction="#getFilePath" text="Browse" />
          </children>
       </Pane>
-      <CheckBox id="stringCB" layoutX="73.0" layoutY="40.0" mnemonicParsing="false" text="String" />
-      <ScrollPane id="advScrollPane" layoutX="70.0" layoutY="222.0" prefHeight="162.0" prefWidth="514.0">
-        <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
-        </content>
+      <CheckBox id="stringCB" layoutX="73.0" layoutY="40.0" mnemonicParsing="false" onAction="#toggleBrowseBtn" text="String">
+         <font>
+            <Font size="13.0" />
+         </font></CheckBox>
+      <ScrollPane id="advScrollPane" fx:id="scrollPanel" layoutX="70.0" layoutY="224.0" prefHeight="121.0" prefWidth="514.0">
+         <content>
+            <VBox fx:id="scrollContentBox" prefHeight="335.0" prefWidth="499.0" />
+         </content>
       </ScrollPane>
-      <Label layoutX="73.0" layoutY="200.0" text="Advanced Options" />
-      <Button id="showBtn" layoutX="321.0" layoutY="126.0" mnemonicParsing="false" text="Show" />
+      <Label layoutX="73.0" layoutY="202.0" text="Advanced Options">
+         <font>
+            <Font size="13.0" />
+         </font></Label>
+      <Button id="showBtn" layoutX="340.0" layoutY="128.0" mnemonicParsing="false" onAction="#togglePasswordVisibility" text="Show" />
+      <Button id="executeBtn" layoutX="274.0" layoutY="357.0" mnemonicParsing="false" text="Execute" />
+      <RadioButton id="darkRB" fx:id="darkRB" layoutX="488.0" layoutY="18.0" mnemonicParsing="false" onAction="#changeMode" text="Dark Mode">
+         <font>
+            <Font size="13.0" />
+         </font>
+      </RadioButton>
    </children>
 </AnchorPane>

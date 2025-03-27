@@ -1,0 +1,52 @@
+.root {
+    -fx-background-color: #f9f9f9;
+}
+
+/* BUTTON STYLE */
+.button {
+    -fx-background-color: #ffffff;
+    -fx-border-radius: 10px;
+    /* -fx-border-color: #ddd; */
+    
+    -fx-font-size: 12px;
+    /* -fx-padding: 10px 20px; */
+    -fx-text-fill: #333;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 5, 0, 2, 2);
+}
+
+.button:hover {
+    -fx-background-color: #e0e0e0;
+}
+
+.button:focused {
+    -fx-border-color: #0078D7;
+    -fx-border-width: 2px;
+}
+
+/* ICONS */
+.button .graphic {
+    -fx-padding: 5px;
+}
+
+/* RADIO BUTTON */
+.radio-button {
+    -fx-text-fill: #333;
+    -fx-font-size: 14px;
+}
+
+.radio-button .radio {
+    -fx-background-color: white;
+    -fx-border-color: #888;
+    -fx-border-radius: 50%;
+    -fx-pref-width: 16px;
+    -fx-pref-height: 16px;
+}
+
+.radio-button:selected .radio {
+    -fx-background-color: #008CBA;
+    -fx-border-color: #008CBA;
+}
+
+.radio-button:selected .dot {
+    -fx-background-color: white;
+}

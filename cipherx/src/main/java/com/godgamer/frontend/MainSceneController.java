@@ -1,23 +1,29 @@
 package com.godgamer.frontend;
 
 import java.io.IOException;
-// import javafx.scene.Parent;
-// import javafx.scene.Scene;
-// import javafx.stage.Stage;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-public class MainSceneController {
-    // private Stage stage;
-    // private Scene scene;
-    // private Parent root;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.RadioButton;
+
+public class MainSceneController implements Initializable {
+
+    @FXML
+    private RadioButton darkRB;
 
     // accept ActionEvent e as parameter to get the source of the event such as stage, scene, etc.
     public void goToEncrypt() throws IOException {
-        // Parent root = App.loadFXML("EncryptionScene");
-        // stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-        // scene = new Scene(root);
-        // stage.setScene(scene); 
-        // stage.show();
         App.setRoot("EncryptionScene");
+    }
+
+    // changes dark or light mode
+    public void changeMode()
+    {
+        App.isDarkMode = !App.isDarkMode;
+        darkRB.setSelected(App.isDarkMode);
+        App.changeCSS((App.isDarkMode) ? "MainSceneDark" : "MainSceneLight");     
     }
 
     public void goToDecrypt() throws IOException {
@@ -31,5 +37,10 @@ public class MainSceneController {
     }
     public void goToSteganography() throws IOException {
         App.setRoot("SteganographyScene");
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        darkRB.setSelected(App.isDarkMode);
     }
 }

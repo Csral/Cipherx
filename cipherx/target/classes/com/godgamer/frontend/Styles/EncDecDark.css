@@ -1,0 +1,176 @@
+/* General Styles */
+.root {
+    -fx-background-color: linear-gradient(to bottom, #1e1e1e, #252525);
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+
+/* Labels */
+.label {
+    -fx-font-size: 13px;
+    -fx-text-fill: #e0e0e0;
+}
+
+/* Buttons */
+.button {
+    -fx-background-color: linear-gradient(to bottom, #333, #444);
+    -fx-text-fill: #ddd;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-border-color: #555;
+    -fx-border-width: 1px;
+    -fx-padding: 6px 12px;
+}
+
+.button:hover {
+    -fx-background-color: linear-gradient(to bottom, #444, #555);
+}
+
+/* Primary Button */
+#executeBtn {
+    -fx-background-color: #008CBA;
+    -fx-text-fill: white;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+}
+
+#executeBtn:hover {
+    -fx-background-color: #0077A5;
+}
+
+/* CheckBox */
+.check-box {
+    -fx-font-size: 13px;
+    -fx-text-fill: #ccc;
+}
+
+.check-box:selected .mark {
+    -fx-background-color: #008CBA;
+}
+
+/* TextFields & PasswordFields */
+.text-field,
+.password-field {
+    -fx-background-color: #2b2b2b;
+    -fx-border-color: #555;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    /* -fx-padding: 6px; */
+    -fx-font-size: 13px;
+    -fx-text-fill: #ddd;
+}
+
+.text-field:focused,
+.password-field:focused {
+    -fx-border-color: #008CBA;
+    -fx-effect: dropshadow(gaussian, #008CBA, 6, 0, 0, 1);
+}
+
+/* ComboBox */
+.choice-box {
+    -fx-background-color: #333;
+    -fx-border-color: #555;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    /* -fx-padding: 5px; */
+    -fx-font-size: 13px;
+    -fx-text-fill: #ddd;
+}
+
+.choice-box .context-menu {
+    -fx-background-color: #444;
+    -fx-border-color: #666;
+}
+
+.choice-box .menu-item {
+    -fx-background-color: #444;
+    -fx-text-fill: #ddd;
+}
+
+.choice-box .menu-item:hover {
+    -fx-background-color: #555;
+}
+
+.choice-box .arrow {
+    -fx-background-color: #ddd;
+}
+
+.choice-box:selected .arrow {
+    -fx-background-color: #0078D7;
+
+}
+
+.choice-box:hover {
+    -fx-border-color: #008CBA;
+}
+
+/* Advanced Options (TextArea) */
+.text-area {
+    -fx-background-color: #2b2b2b;
+    -fx-border-color: #555;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 6px;
+    -fx-font-size: 13px;
+    -fx-text-fill: #ddd;
+}
+
+/* Back Button */
+#backBtn {
+    -fx-background-color: #333;
+    -fx-border-color: #008CBA;
+    -fx-text-fill: #008CBA;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+}
+
+#backBtn:hover {
+    -fx-background-color: #444;
+}
+
+/* RADIO BUTTON */
+.radio-button {
+    -fx-text-fill: #ddd;
+    -fx-font-size: 14px;
+}
+
+.radio-button .radio {
+    -fx-background-color: #2b2b2b;
+    -fx-border-color: #666;
+    -fx-border-radius: 50%;
+    -fx-pref-width: 16px;
+    -fx-pref-height: 16px;
+}
+
+.radio-button:selected .radio {
+    -fx-background-color: #008CBA;
+    -fx-border-color: #008CBA;
+}
+
+.radio-button:selected .dot {
+    -fx-background-color: white;
+}
+
+/* SCROLLPANE */
+.scroll-pane {
+    -fx-background: #1e1e1e;
+    -fx-border-color: #444;
+    -fx-border-radius: 6px;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: #252525;
+}
+
+.scroll-bar:vertical,
+.scroll-bar:horizontal {
+    -fx-background-color: #333;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #555;
+    -fx-background-radius: 4px;
+}
+
+.scroll-bar .thumb:hover {
+    -fx-background-color: #666;
+}

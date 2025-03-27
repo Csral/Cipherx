@@ -14,8 +14,9 @@ import javafx.stage.Stage;
  */
 public class App extends Application {
 
-    private static Scene scene;
+    public static Scene scene;
     private static String css;
+    public static boolean isDarkMode = false;
 
     private static enum IMAGE_EXTENSIONS {
         png,
@@ -39,7 +40,7 @@ public class App extends Application {
         scene = new Scene(root);
 
         // adding css stylesheet
-        css = getCSS("Application");
+        css = getCSS("MainSceneLight");
         scene.getStylesheets().add(css);
 
         // setting up the stage prerequisites
@@ -52,9 +53,22 @@ public class App extends Application {
         stage.show();
     }
 
+    // changes the css file of the scene
+    static void changeCSS(String css) {
+        scene.getStylesheets().remove(App.css);
+        scene.getStylesheets().add(getCSS(css));
+        App.css = getCSS(css);
+    }
+
     // to change scenes
     static void setRoot(String fxml) throws IOException {
         scene.setRoot(loadFXML(fxml));
+        changeCSS(isDarkMode ? "EncDecDark" : "EncDecLight");
+    }
+
+    static void setRoot(String fxml, String darkCSS, String lightCSS) throws IOException {
+        scene.setRoot(loadFXML(fxml));
+        changeCSS(isDarkMode ? darkCSS : lightCSS);
     }
 
     // load new scene's fxml
@@ -65,8 +79,6 @@ public class App extends Application {
 
     public static void main(String[] args) {
         launch();
-        
-        // System.out.println(App.class.getResource("Scenes/MainScene.fxml"));
     }
 
 }

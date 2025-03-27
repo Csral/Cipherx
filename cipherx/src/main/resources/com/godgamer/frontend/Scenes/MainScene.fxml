@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.godgamer.frontend.MainSceneController">
    <children>
-      <Button id="encBtn" layoutX="36.0" layoutY="200.0" mnemonicParsing="false" onAction="#goToEncrypt" prefHeight="86.0" prefWidth="73.0" text="Encryption" />
-      <Button id="decBtn" layoutX="138.0" layoutY="200.0" mnemonicParsing="false" onAction="#goToDecrypt" prefHeight="86.0" prefWidth="74.0" text="Decryption" />
-      <Button id="obfBtn" layoutX="362.0" layoutY="200.0" mnemonicParsing="false" onAction="#goToObfuscation" prefHeight="86.0" prefWidth="81.0" text="Obfuscation" />
-      <Button id="steBtn" layoutX="471.0" layoutY="200.0" mnemonicParsing="false" onAction="#goToSteganography" prefHeight="86.0" prefWidth="96.0" text="steganography" />
-      <Button id="cryBtn" layoutX="246.0" layoutY="200.0" mnemonicParsing="false" onAction="#goToCryptography" prefHeight="86.0" prefWidth="89.0" text="Cryptography" />
+      <Button id="encBtn" alignment="BOTTOM_CENTER" layoutX="366.0" layoutY="105.0" mnemonicParsing="false" onAction="#goToEncrypt" prefHeight="86.0" prefWidth="106.0" text="Encryption" />
+      <Button id="decBtn" alignment="BOTTOM_CENTER" layoutX="140.0" layoutY="105.0" mnemonicParsing="false" onAction="#goToDecrypt" prefHeight="86.0" prefWidth="106.0" text="Decryption" />
+      <Button id="obfBtn" alignment="BOTTOM_CENTER" layoutX="247.0" layoutY="243.0" mnemonicParsing="false" onAction="#goToObfuscation" prefHeight="86.0" prefWidth="106.0" text="Obfuscation" />
+      <Button id="steBtn" alignment="BOTTOM_CENTER" layoutX="419.0" layoutY="243.0" mnemonicParsing="false" onAction="#goToSteganography" prefHeight="86.0" prefWidth="106.0" text="steganography" />
+      <Button id="cryBtn" alignment="BOTTOM_CENTER" layoutX="67.0" layoutY="243.0" mnemonicParsing="false" onAction="#goToCryptography" prefHeight="86.0" prefWidth="106.0" text="Cryptography" />
+      <RadioButton id="darkRB" fx:id="darkRB" layoutX="488.0" layoutY="18.0" mnemonicParsing="false" onAction="#changeMode" text="Dark Mode">
+         <font>
+            <Font size="13.0" />
+         </font>
+      </RadioButton>
    </children>
 </AnchorPane>
