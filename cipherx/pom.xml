@@ -41,7 +41,7 @@
                         <!-- Usage: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.godgamer.App</mainClass>
+                            <mainClass>com.godgamer.frontend.App</mainClass>
                         </configuration>
                     </execution>
                 </executions>
