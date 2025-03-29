@@ -7,7 +7,8 @@
 /* Labels */
 .label {
     -fx-font-size: 13px;
-    -fx-text-fill: #f5b700; /*#c9d1d9;*/
+    -fx-text-fill: #c9d1d9;
+    /* Light cyan text */
 }
 
 /* Buttons */
@@ -27,7 +28,7 @@
 
 /* RADIO BUTTON */
 .radio-button {
-    -fx-text-fill: #f5b700;
+    -fx-text-fill: #c9d1d9;
     -fx-font-size: 13px;
 }
 
@@ -46,12 +47,4 @@
 
 .radio-button:selected .dot {
     -fx-background-color: #0a0f1a;
-}
-
-.image-view {
-    -fx-effect: innershadow(gaussian, white, 10, 0.5, 0, 0);
-}
-
-#mainLogo {
-    -fx-effect: innershadow(gaussian, black, 10, 0.5, 0, 0);
 }

@@ -1,6 +1,8 @@
 package com.godgamer.frontend;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -18,14 +20,22 @@ public class App extends Application {
     private static String css;
     public static boolean isDarkMode = false;
 
-    private static enum IMAGE_EXTENSIONS {
+    // Images
+    public static Map<String, Image> images = new HashMap<>();
+
+    public static enum IMAGE_EXTENSIONS {
         png,
-        jpg
+        jpg,
+        svg
     }
     
     // get image as JavaFX Image
-    private static Image getImage(String img, String ext) {
-        return new Image(App.class.getResource("Images/" + img + "." + ext).toExternalForm());
+    public static Image getImage(String img, String ext, boolean backgroundLoading) {
+        return new Image(App.class.getResource("Images/" + img + "." + ext).toExternalForm(), backgroundLoading);
+    }
+
+    public static Image getImage(String img, String ext,double width, double height,  boolean backgroundLoading) {
+        return new Image(App.class.getResource("Images/" + img + "." + ext).toExternalForm(),width, height, true, true ,backgroundLoading);
     }
 
     // get css address as string
@@ -41,10 +51,11 @@ public class App extends Application {
 
         // adding css stylesheet
         css = getCSS("MainSceneLight");
+        // css = getCSS("testLight");
         scene.getStylesheets().add(css);
 
         // setting up the stage prerequisites
-        Image icon = getImage("icon", IMAGE_EXTENSIONS.jpg.toString()); // for app icon
+        Image icon = getImage("logo3", IMAGE_EXTENSIONS.jpg.toString(), false); // for app icon
         stage.getIcons().add(icon);
         stage.setTitle("CipherX");
         stage.setMinWidth(600);
@@ -78,6 +89,15 @@ public class App extends Application {
     }
 
     public static void main(String[] args) {
+        // load all images
+        images.put("show pass", getImage("show pass", App.IMAGE_EXTENSIONS.png.toString(), 20d, 20d, true));
+        images.put("hide pass", getImage("hide pass", App.IMAGE_EXTENSIONS.png.toString(), 20d, 20d, true));
+        images.put("encrypt", getImage("encryption", App.IMAGE_EXTENSIONS.png.toString(), 88d, 58d, true));
+        images.put("decrypt", getImage("Decryption", App.IMAGE_EXTENSIONS.png.toString(), 88d, 58d, true));
+        images.put("obfuscate", getImage("Obfuscation", App.IMAGE_EXTENSIONS.png.toString(), 88d, 58d, true));
+        images.put("cryptography", getImage("Cryptography", App.IMAGE_EXTENSIONS.png.toString(), 88d, 58d, true));
+        images.put("steganography", getImage("Steganography", App.IMAGE_EXTENSIONS.png.toString(), 88d, 58d, true));
+        images.put("logo", getImage("logo3", App.IMAGE_EXTENSIONS.jpg.toString(), 200d, 150d, true));
         launch();
     }
 

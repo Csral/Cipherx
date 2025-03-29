@@ -8,6 +8,7 @@
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
@@ -26,7 +27,7 @@
          </font></CheckBox>
       <PasswordField id="passwordTB" fx:id="passwordTB" layoutX="179.0" layoutY="128.0" prefHeight="26.0" prefWidth="150.0" promptText="Encryption Password" />
       <TextField id="passwordShowTB" fx:id="passwordShowTB" layoutX="179.0" layoutY="128.0" prefHeight="26.0" prefWidth="150.0" />
-      <Label layoutX="74.0" layoutY="129.0" text="Password">
+      <Label layoutX="74.0" layoutY="132.0" text="Password">
          <font>
             <Font size="13.0" />
          </font></Label>
@@ -54,7 +55,10 @@
          <font>
             <Font size="13.0" />
          </font></Label>
-      <Button id="showBtn" layoutX="340.0" layoutY="128.0" mnemonicParsing="false" onAction="#togglePasswordVisibility" text="Show" />
+      <Button id="showBtn" fx:id="showBtn" layoutX="340.0" layoutY="126.0" mnemonicParsing="false" onAction="#togglePasswordVisibility">
+         <graphic>
+            <ImageView id="showBtnImage" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" />
+         </graphic></Button>
       <Button id="executeBtn" layoutX="274.0" layoutY="357.0" mnemonicParsing="false" text="Execute" />
       <RadioButton id="darkRB" fx:id="darkRB" layoutX="488.0" layoutY="18.0" mnemonicParsing="false" onAction="#changeMode" text="Dark Mode">
          <font>

@@ -15,6 +15,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 
@@ -31,16 +32,16 @@ public class EncryptionSceneController implements Initializable{
     @FXML
     private CheckBox verifiedAlgCB;
     @FXML
-    private TextField inputTB;
-    @FXML
-    private TextField passwordShowTB;
+    private TextField inputTB, passwordShowTB;
     @FXML
     private PasswordField passwordTB;
     @FXML
-    private Button browseBtn;
+    private Button browseBtn, showBtn;
 
-    private final String[] verifiedAlgType = {"Caesar Cipher", "Vigenere Cipher"};
-    private final String[] unverifiedAlgType = {"Shift Value"};
+    // private final Image sPass = App.getImage("show pass", App.IMAGE_EXTENSIONS.png.toString(),20d,20d, true), 
+            // hPass = App.getImage("hide pass", App.IMAGE_EXTENSIONS.png.toString(),20d, 20d, true);
+
+    public static final String[] verifiedAlgType = {"Caesar Cipher", "Vigenere Cipher"}, unverifiedAlgType  = {"Shift Value"};
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
@@ -63,6 +64,8 @@ public class EncryptionSceneController implements Initializable{
         passwordShowTB.setVisible(false); // Initially hidden
         // Make sure both fields have the same text
         passwordShowTB.textProperty().bindBidirectional(passwordTB.textProperty());
+        ImageView showBtnImg = (ImageView)showBtn.getGraphic();
+        showBtnImg.setImage(App.images.get("show pass")); // Set the image to show password icon
     }
 
     // accept ActionEvent e as parameter to get the source of the event such as stage, scene, etc.
@@ -102,6 +105,11 @@ public class EncryptionSceneController implements Initializable{
     {
         passwordShowTB.setVisible(!passwordShowTB.isVisible());
         passwordTB.setVisible(!passwordTB.isVisible());
+        ImageView showBtnImg = (ImageView) showBtn.getGraphic();
+        if (passwordShowTB.isVisible())
+            showBtnImg.setImage(App.images.get("hide pass")); // Set the image to hide password icon
+        else
+            showBtnImg.setImage(App.images.get("show pass")); // Set the image to show password icon
     }
 
     public void getFilePath()

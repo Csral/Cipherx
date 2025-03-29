@@ -1,6 +1,6 @@
 /* General Styles */
 .root {
-    -fx-background-color: linear-gradient(to bottom, #f9f9f9, #eaeaea);
+    -fx-background-color: linear-gradient(to bottom, #f5f5f5, #e0e0e0);
     -fx-font-family: "Segoe UI", sans-serif;
 }
 
@@ -12,77 +12,86 @@
 
 /* Buttons */
 .button {
-    -fx-background-color: linear-gradient(to bottom, #ffffff, #e0e0e0);
+    -fx-background-color: linear-gradient(to bottom, #ffffff, #dfeaf4);
     -fx-text-fill: #333;
-    -fx-border-radius: 8px;
-    -fx-background-radius: 8px;
-    -fx-border-color: #ccc;
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
+    /* -fx-border-color: #555; */
+    /* Dark Grey */
     -fx-border-width: 1px;
-    -fx-padding: 6px 12px;
 }
 
 .button:hover {
-    -fx-background-color: linear-gradient(to bottom, #f0f0f0, #d6d6d6);
+    -fx-background-color: linear-gradient(to bottom, #e0f0ff, #cfe2f3);
+}
+
+/* Show Button image */
+#showBtnImage {
+    -fx-effect: innershadow(gaussian, black, 10, 0.5, 0, 0);
 }
 
 /* Primary Button */
 #executeBtn {
-    -fx-background-color: #008CBA;
+    -fx-background-color: #0077A5;
     -fx-text-fill: white;
-    -fx-border-radius: 8px;
-    -fx-background-radius: 8px;
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
+    -fx-border-color: #0077A5;
+    /* Dark Blue */
 }
 
 #executeBtn:hover {
-    -fx-background-color: #0077A5;
+    -fx-background-color: #005f86;
 }
 
 /* CheckBox */
 .check-box {
     -fx-font-size: 13px;
-    -fx-text-fill: #444;
+    -fx-text-fill: #333;
 }
 
 .check-box .box {
-    /* -fx-border-color: #888; */
-    -fx-background-radius: 4px;
+    /* -fx-border-color: #555; */
+    /* Dark Grey */
+    -fx-background-radius: 6px;
 }
 
 .check-box:selected .mark {
-    -fx-background-color: #008CBA;
+    -fx-background-color: #0077A5;
 }
 
 /* TextFields & PasswordFields */
 .text-field,
 .password-field {
     -fx-background-color: white;
-    -fx-border-color: #ccc;
-    -fx-border-radius: 6px;
-    -fx-background-radius: 6px;
-    /* -fx-padding: 6px; */
+    -fx-border-color: #555;
+    /* Dark Grey */
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
     -fx-font-size: 13px;
 }
 
 .text-field:focused,
 .password-field:focused {
-    -fx-border-color: #008CBA;
+    -fx-border-color: #0077A5;
     -fx-effect: dropshadow(gaussian, #bbbbbb, 6, 0, 0, 1);
 }
 
 /* ComboBox */
 .choice-box {
-    -fx-background-color: #f5f5f5;
-    -fx-border-color: #d0d0d0;
-    -fx-border-radius: 5px;
-    -fx-background-radius: 5px;
-    /* -fx-padding: 5px; */
+    -fx-background-color: #ffffff;
+    -fx-border-color: #555;
+    /* Dark Grey */
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
     -fx-font-size: 13px;
     -fx-text-fill: #333;
 }
 
 .choice-box .context-menu {
     -fx-background-color: #ffffff;
-    -fx-border-color: #d0d0d0;
+    -fx-border-color: #555;
+    /* Dark Grey */
 }
 
 .choice-box .menu-item {
@@ -91,42 +100,44 @@
 }
 
 .choice-box .menu-item:hover {
-    -fx-background-color: #008CBA;
+    -fx-background-color: #0077A5;
+    -fx-text-fill: white;
 }
 
 .choice-box .arrow {
-    -fx-background-color: #555;
+    -fx-background-color: #0077A5;
 }
 
 .choice-box:hover {
-    -fx-border-color: #008CBA;
+    -fx-border-color: #005f86;
 }
 
 /* Advanced Options (TextArea) */
 .text-area {
     -fx-background-color: white;
-    -fx-border-color: #ccc;
-    -fx-border-radius: 6px;
-    -fx-background-radius: 6px;
-    -fx-padding: 6px;
+    -fx-border-color: #555;
+    /* Dark Grey */
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
     -fx-font-size: 13px;
 }
 
 .text-area:focused {
-    -fx-border-color: #008CBA;
+    -fx-border-color: #0077A5;
 }
 
 /* Back Button */
 #backBtn {
     -fx-background-color: #ffffff;
-    -fx-border-color: #008CBA;
-    -fx-text-fill: #008CBA;
-    -fx-border-radius: 8px;
-    -fx-background-radius: 8px;
+    -fx-border-color: #0077A5;
+    /* Dark Blue */
+    -fx-text-fill: #0077A5;
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
 }
 
 #backBtn:hover {
-    -fx-background-color: #f0f8ff;
+    -fx-background-color: #e0f0ff;
 }
 
 /* RADIO BUTTON */
@@ -137,15 +148,16 @@
 
 .radio-button .radio {
     -fx-background-color: white;
-    -fx-border-color: #888;
+    -fx-border-color: #555;
+    /* Dark Grey */
     -fx-border-radius: 50%;
     -fx-pref-width: 16px;
     -fx-pref-height: 16px;
 }
 
 .radio-button:selected .radio {
-    -fx-background-color: #008CBA;
-    -fx-border-color: #008CBA;
+    -fx-background-color: #0077A5;
+    -fx-border-color: #0077A5;
 }
 
 .radio-button:selected .dot {
@@ -154,9 +166,10 @@
 
 /* SCROLLPANE */
 .scroll-pane {
-    -fx-background: #f9f9f9;
-    -fx-border-color: #ccc;
-    -fx-border-radius: 6px;
+    -fx-background: #ffffff;
+    /* -fx-border-color: #555; */
+    /* Dark Grey */
+    -fx-border-radius: 10px;
 }
 
 .scroll-pane .viewport {
@@ -169,10 +182,11 @@
 }
 
 .scroll-bar .thumb {
-    -fx-background-color: #cccccc;
+    -fx-background-color: #07a2e0;
+    /* Dark Grey */
     -fx-background-radius: 4px;
 }
 
 .scroll-bar .thumb:hover {
-    -fx-background-color: #bbbbbb;
+    -fx-background-color: #0077A5;
 }
