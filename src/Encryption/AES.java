@@ -1,9 +1,12 @@
 package Encryption;
 
+import java.io.*;
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+
 import java.util.Base64;
 import java.security.SecureRandom;
 
@@ -40,6 +43,43 @@ public class AES {
         ivSpec = new IvParameterSpec(
             this.RANDOM_SPACE_GEN()
         );
+
+    }
+
+    public String KEY_SAVE() throws Exception {
+
+        String filename = "key_" + System.currentTimeMillis() + "_" + ( (int) (Math.floor(Math.random()*2792)) & 2792) + ".obj.key";
+
+        try (FileOutputStream fos = new FileOutputStream(filename);
+            ObjectOutputStream oos = new ObjectOutputStream(fos)
+        ) {
+
+            byte[] keyObj = this.secretKey.getEncoded();
+            byte[] ivSpecObj = this.ivSpec.getIV();
+
+            //!todo Ascii encrypt todo !/
+
+            oos.writeObject(keyObj);
+            oos.writeObject(ivSpecObj);
+
+            return filename;
+
+        }
+
+    }
+
+    public void KEY_LOAD(String filename) throws Exception {
+
+        try (FileInputStream fis = new FileInputStream(filename);
+            ObjectInputStream ois = new ObjectInputStream(fis)) {
+
+                byte[] keyBytes = (byte[]) ois.readObject();
+                byte[] ivBytes = (byte[]) ois.readObject();
+
+                this.secretKey = new SecretKeySpec(keyBytes, "AES");
+                this.ivSpec = new IvParameterSpec(ivBytes);
+
+        }
 
     }
 
