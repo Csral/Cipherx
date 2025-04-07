@@ -1,6 +1,7 @@
 package Encryption;
 
 import java.io.*;
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
@@ -176,30 +177,179 @@ public class AES {
             }
 
             int mkey = this.generateKey(filename+passwd) * 255;
-            int pkey = this.generateKey(passwd);
+            int pkey = this.generateKey2(passwd);
+            int pkey2 = this.generateKey(passwd); //* Generate normal pkey */
             
-            SecureRandom mRandom = SecureRandom.getInstanceStrong();
-            byte[] Rdata = new byte[mkey];
+            //! Generate key 2 is for n fake timed times.
+            //! ( mkey ^ pkey ) & (n-1) is where it'll be randomly placed
 
+            SecureRandom mRandom = SecureRandom.getInstanceStrong();
+
+            int n = Math.abs(cxor(pkey2,pkey));
             int times = ( ( mRandom.ints(100, 1, 1000).reduce(0, (a, b) -> a ^ b) + mRandom.ints(100, 1, 1000).sum() ) & 511 ) + 1;
+            int pos = (pkey ^ pkey2) % (n+1);
+
+            int mtimes = 0;
+            int size = 8 + mRandom.nextInt(32);
 
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hash = digest.digest((pkey + "").getBytes(StandardCharsets.UTF_8));
+            byte[] hash = digest.digest((pkey + pkey2 + "").getBytes(StandardCharsets.UTF_8));
             int hashedTimes = ByteBuffer.wrap(hash).getInt();
+
+            while (n > 0) {
+
+                if ( (n ^ pos) == 0) {
+                    mtimes = times;
+                    oos.writeInt(mtimes ^ hashedTimes);
+                    n--;
+                } else {
+                    oos.writeInt(times ^ hashedTimes);
+                    n--;
+                }
+
+            }
+
+            times = mtimes;
+
+            for (int i = 0; i < times; i++) {
+
+                byte[] Rdata = new byte[size];
+                mRandom.nextBytes(Rdata);
+                oos.writeObject(Rdata);
+
+            }
+            // todo Store fake key (n times, n derived from passwd hash) (Store newTimes somewhere in between these n fake keys derived by password) and same for ivspec  //
+            oos.writeObject(keyObj);
+
+            times = ( ( ((times ^ pkey) & mkey) + ( mRandom.ints(146, 100, 10000).reduce(0, (a, b) -> a ^ b) + mRandom.ints(146, 100, 10000).sum() ) ) & 511 ) + 1;
+
             oos.writeInt(times ^ hashedTimes);
 
             for (int i = 0; i < times; i++) {
 
+                byte[] Rdata = new byte[size];
                 mRandom.nextBytes(Rdata);
                 oos.writeObject(Rdata);
 
             }
 
-            oos.writeObject(keyObj);
             oos.writeObject(ivSpecObj);
+
+            times = ( ( ((times ^ mRandom.nextInt()) & (mRandom.nextInt() ^ mkey)) + ( mRandom.ints(346, 1000, 10000).reduce(0, (a, b) -> a ^ b) + mRandom.ints(46, 1000, 10000).sum() ) ) & 511 ) + 1;
+
+            while (times > 0) {
+                
+                byte[] Rdata = new byte[size];
+                mRandom.nextBytes(Rdata);
+                oos.writeObject(Rdata);
+                times--;
+
+            }
+
+            return filename;
+
+        }
+
+    }
+
+    public String KEY_SAVE_SECURE(boolean encrypt, String passwd, int degree_of_security, boolean beyond_limit) throws Exception {
+
+        SecureRandom sr = SecureRandom.getInstanceStrong();
+
+        int degree = (int) Math.pow(2, 10 +degree_of_security);
+        int multiplicity = 1, multiplicity2 = 1;
+        if (beyond_limit) {
+
+            multiplicity = degree_of_security;
+            multiplicity2 = degree_of_security*100;
+            if (multiplicity < 1) {
+                multiplicity = 1;
+                multiplicity2 = 1;
+            }
+
+        }
+
+        String filename = "key_" + ( ( (System.currentTimeMillis() << sr.nextInt() ) & 32) ^ sr.nextInt()) + "_" + ( (int) (Math.floor(Math.random()*2792) + sr.ints(100,1,500).reduce(0, (a, b) -> a ^ b)) & 2792) + ".obj.key";
+
+        try (FileOutputStream fos = new FileOutputStream(filename);
+            ObjectOutputStream oos = new ObjectOutputStream(fos)
+        ) {
+
+            byte[] keyObj = this.secretKey.getEncoded();
+            byte[] ivSpecObj = this.ivSpec.getIV();
+
+            if (encrypt) {
+
+                keyObj = this.BYTE_E_MODIFY(passwd, keyObj);
+                ivSpecObj = this.BYTE_E_MODIFY(passwd, ivSpecObj);
+
+            }
+
+            int mkey = this.generateKey(filename+passwd) * 255;
+            int pkey = this.generateKey2(passwd);
+            int pkey2 = this.generateKey(passwd); //* Generate normal pkey */
+            
+            //! Generate key 2 is for n fake timed times.
+            //! (pkey ^ pkey2) % (n+1) is where it'll be randomly placed
+
+            SecureRandom mRandom = SecureRandom.getInstanceStrong();
+
+            int n = Math.abs(cxor(pkey2,pkey));
+            int times = ( ( mRandom.ints(100*multiplicity, 1, 1000*(multiplicity2)).reduce(0, (a, b) -> a ^ b) + mRandom.ints(100*multiplicity, 1, 1000*(multiplicity2)).sum() ) & degree ) + 1;
+            int pos = (pkey ^ pkey2) % (n+1);
+
+            int mtimes = 0;
+
+            int size = 8 + mRandom.nextInt(32);
+
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest((pkey + pkey2 + "").getBytes(StandardCharsets.UTF_8));
+            int hashedTimes = ByteBuffer.wrap(hash).getInt();
+
+            while (n > 0) {
+
+                if ( (n ^ pos) == 0) {
+                    mtimes = times;
+                    oos.writeInt(mtimes ^ hashedTimes);
+                    n--;
+                } else {
+                    oos.writeInt(times ^ hashedTimes);
+                    n--;
+                }
+
+            }
+
+            times = mtimes;
+
+            for (int i = 0; i < times; i++) {
+
+                byte[] Rdata = new byte[size];
+                mRandom.nextBytes(Rdata);
+                oos.writeObject(Rdata);
+
+            }
+            // todo Store fake key (n times, n derived from passwd hash) (Store newTimes somewhere in between these n fake keys derived by password) and same for ivspec  //
+            oos.writeObject(keyObj);
+
+            times = ( ( ((times ^ pkey) & mkey) + ( mRandom.ints(146*multiplicity, 100, 10000*(multiplicity2)).reduce(0, (a, b) -> a ^ b) + mRandom.ints(146*(multiplicity*100), 100, 10000*(multiplicity2)).sum() ) ) & degree ) + 1;
+
+            oos.writeInt(times ^ hashedTimes);
+
+            for (int i = 0; i < times; i++) {
+
+                byte[] Rdata = new byte[size];
+                mRandom.nextBytes(Rdata);
+                oos.writeObject(Rdata);
+
+            }
+
+            oos.writeObject(ivSpecObj);
+
+            times = ( ( ((times ^ mRandom.nextInt()) & (mRandom.nextInt() ^ mkey)) + ( mRandom.ints(346*multiplicity, 1000, 10000*multiplicity2).reduce(0, (a, b) -> a ^ b) + mRandom.ints(46*multiplicity, 1000, 10000*multiplicity2).sum() ) ) & degree ) + 1;
 
             while (times > 0) {
 
+                byte[] Rdata = new byte[size];
                 mRandom.nextBytes(Rdata);
                 oos.writeObject(Rdata);
                 times--;
@@ -230,7 +380,7 @@ public class AES {
                 this.secretKey = new SecretKeySpec(keyBytes, "AES");
                 this.ivSpec = new IvParameterSpec(ivBytes);
 
-        } catch (EOFException eof) {
+        } catch (Exception eof) {
             
             SecureRandom sr = SecureRandom.getInstanceStrong();
             byte[] tmp = new byte[16];
@@ -250,14 +400,30 @@ public class AES {
         try (FileInputStream fis = new FileInputStream(filename);
             ObjectInputStream ois = new ObjectInputStream(fis)) {
 
-                int times = ois.readInt();
-                int pkey = this.generateKey(passwd);
+                int pkey = this.generateKey2(passwd);
+                int pkey2 = this.generateKey(passwd); //* Generate normal pkey */
+
+                int n = Math.abs(cxor(pkey2,pkey));
+                int pos = (pkey^pkey2) % (n+1);
+
+                int times = 0, mtimes = 0;
                 
                 MessageDigest digest = MessageDigest.getInstance("SHA-256");
-                byte[] hash = digest.digest((pkey + "").getBytes(StandardCharsets.UTF_8));
+                byte[] hash = digest.digest((pkey + pkey2 + "").getBytes(StandardCharsets.UTF_8));
                 int hashedTimes = ByteBuffer.wrap(hash).getInt();
 
-                times ^= hashedTimes;
+                while (n > 0) {
+
+                    times = ois.readInt();
+
+                    if ( (n ^ pos) == 0) {
+                        mtimes = times ^ hashedTimes;
+                    }
+
+                    n--;
+
+                }
+                times = mtimes;
 
                 while (times > 0) {
                     ois.readObject();
@@ -265,6 +431,14 @@ public class AES {
                 }
 
                 byte[] keyBytes = (byte[]) ois.readObject();
+
+                times = ois.readInt() ^ hashedTimes;
+
+                while (times > 0) {
+                    ois.readObject();
+                    times--;
+                }
+
                 byte[] ivBytes = (byte[]) ois.readObject();
 
                 if (encrypted) {
@@ -277,7 +451,7 @@ public class AES {
                 this.secretKey = new SecretKeySpec(keyBytes, "AES");
                 this.ivSpec = new IvParameterSpec(ivBytes);
 
-        } catch (EOFException eofe) {
+        } catch (Exception eofe) {
             
             SecureRandom sr = SecureRandom.getInstanceStrong();
             byte[] tmp = new byte[16];
@@ -288,6 +462,10 @@ public class AES {
 
         }
 
+    }
+
+    public int cxor(int a, int b) {
+        return (( ( a & b ) << (a^b) ) ^ ( (a|b) << ((a&b)*(a|b)))) % 9223372;
     }
 
     private int generateKey(String passwd) {
@@ -301,6 +479,27 @@ public class AES {
 
             int k = (ascii * position + 1);
             k = (k << ((position + ENG_CODE_CONTENT) % 16)) & 0xFFFF;
+
+            int nextAscii = (i + 1 < passwdBytes.length) ? passwdBytes[i + 1] & 0xFF : passwdBytes[0] & 0xFF;
+            int n = k ^ nextAscii;
+            
+            key ^= n;
+        }
+
+        return key;
+    }
+
+    private int generateKey2(String passwd) {
+        int key = 0;
+        byte[] passwdBytes = passwd.getBytes(StandardCharsets.UTF_8);
+
+        for (int i = 0; i < passwdBytes.length; i++) {
+            int ascii = passwdBytes[i] & 0xFF;
+            int ENG_CODE_CONTENT = EGC.getOrDefault((char) passwdBytes[i], 30) ^ ascii << (passwdBytes.length & key);
+            int position = Math.abs(i + 1 + ENG_CODE_CONTENT - ascii);
+
+            int k = (ascii * position + 1);
+            k = (k << ((position + ENG_CODE_CONTENT) % 32)) & 0xFFFF;
 
             int nextAscii = (i + 1 < passwdBytes.length) ? passwdBytes[i + 1] & 0xFF : passwdBytes[0] & 0xFF;
             int n = k ^ nextAscii;
