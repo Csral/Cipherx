@@ -828,7 +828,7 @@ public class AES {
     
     }
 
-    public String encrypt_CBC(String data, String passwd, int degree_of_security, boolean off_limits) throws Exception {
+    public String encrypt_CBC(String data, String passwd, int degree_of_security, boolean off_limit) throws Exception {
 
         this.MODIFY_KEY();
         this.MODIFY_IVSPACE();
@@ -837,14 +837,27 @@ public class AES {
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
         byte[] encrypted = cipher.doFinal(data.getBytes());
 
-        this.KEY_SAVE_SECURE(true, passwd, degree_of_security, off_limits);
+        this.KEY_SAVE_SECURE(true, passwd, degree_of_security, off_limit);
 
         return Base64.getEncoder().encodeToString(encrypted);
     
     }
 
-    public String decrypt_CBC(String encryptedData) throws Exception {
+    public String decrypt_CBC(String encryptedData, String filename) throws Exception {
         
+        this.KEY_LOAD(filename);
+
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec);
+        byte[] decrypted = cipher.doFinal(Base64.getDecoder().decode(encryptedData));
+        return new String(decrypted);
+    
+    }
+
+    public String decrypt_CBC(String encryptedData, String filename, String passwd) throws Exception {
+        
+        this.KEY_LOAD(filename, true, passwd);
+
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec);
         byte[] decrypted = cipher.doFinal(Base64.getDecoder().decode(encryptedData));
@@ -854,14 +867,63 @@ public class AES {
 
     public String encrypt_ECB(String data) throws Exception {
 
+        this.MODIFY_KEY();
+        this.MODIFY_IVSPACE();
+
         Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
         cipher.init(Cipher.ENCRYPT_MODE, secretKey);
         byte[] encrypted = cipher.doFinal(data.getBytes());
+
+        this.KEY_SAVE();
+
         return Base64.getEncoder().encodeToString(encrypted);
 
     }
 
-    public String decrypt_ECB(String encryptedData) throws Exception {
+    public String encrypt_ECB(String data, String passwd) throws Exception {
+
+        this.MODIFY_KEY();
+        this.MODIFY_IVSPACE();
+
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+        byte[] encrypted = cipher.doFinal(data.getBytes());
+
+        this.KEY_SAVE(true, passwd);
+
+        return Base64.getEncoder().encodeToString(encrypted);
+
+    }
+
+    public String encrypt_ECB(String data, String passwd, int degree_of_security, boolean off_limit) throws Exception {
+
+        this.MODIFY_KEY();
+        this.MODIFY_IVSPACE();
+
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+        byte[] encrypted = cipher.doFinal(data.getBytes());
+
+        this.KEY_SAVE_SECURE(true, passwd, degree_of_security, off_limit);
+
+        return Base64.getEncoder().encodeToString(encrypted);
+
+    }
+
+    public String decrypt_ECB(String encryptedData, String filename) throws Exception {
+
+        this.KEY_LOAD(filename);
+
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+        cipher.init(Cipher.DECRYPT_MODE, secretKey);
+        byte[] decrypted = cipher.doFinal(Base64.getDecoder().decode(encryptedData));
+        return new String(decrypted);
+
+    }
+
+    public String decrypt_ECB(String encryptedData, String filename, String passString) throws Exception {
+
+        this.KEY_LOAD(filename, true, passString);
 
         Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
         cipher.init(Cipher.DECRYPT_MODE, secretKey);
@@ -872,14 +934,63 @@ public class AES {
 
     public String encrypt_CFB(String data) throws Exception {
 
+        this.MODIFY_KEY();
+        this.MODIFY_IVSPACE();
+
         Cipher cipher = Cipher.getInstance("AES/CFB8/NoPadding");
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
         byte[] encrypted = cipher.doFinal(data.getBytes());
+
+        this.KEY_SAVE();
+
         return Base64.getEncoder().encodeToString(encrypted);
 
     }
 
-    public String decrypt_CFB(String encryptedData) throws Exception {
+    public String encrypt_CFB(String data, String passwd) throws Exception {
+
+        this.MODIFY_KEY();
+        this.MODIFY_IVSPACE();
+
+        Cipher cipher = Cipher.getInstance("AES/CFB8/NoPadding");
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
+        byte[] encrypted = cipher.doFinal(data.getBytes());
+
+        this.KEY_SAVE(true, passwd);
+
+        return Base64.getEncoder().encodeToString(encrypted);
+
+    }
+
+    public String encrypt_CFB(String data, String passwd, int degree_of_security, boolean off_limit) throws Exception {
+
+        this.MODIFY_KEY();
+        this.MODIFY_IVSPACE();
+
+        Cipher cipher = Cipher.getInstance("AES/CFB8/NoPadding");
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
+        byte[] encrypted = cipher.doFinal(data.getBytes());
+
+        this.KEY_SAVE_SECURE(true, passwd, degree_of_security, off_limit);
+
+        return Base64.getEncoder().encodeToString(encrypted);
+
+    }
+
+    public String decrypt_CFB(String encryptedData, String filename) throws Exception {
+
+        this.KEY_LOAD(filename);
+
+        Cipher cipher = Cipher.getInstance("AES/CFB8/NoPadding");
+        cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec);
+        byte[] decrypted = cipher.doFinal(Base64.getDecoder().decode(encryptedData));
+        return new String(decrypted);
+
+    }
+
+    public String decrypt_CFB(String encryptedData, String filename, String passwd) throws Exception {
+
+        this.KEY_LOAD(filename, true, passwd);
 
         Cipher cipher = Cipher.getInstance("AES/CFB8/NoPadding");
         cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec);
@@ -890,14 +1001,63 @@ public class AES {
 
     public String encrypt_OFB(String data) throws Exception {
 
+        this.MODIFY_KEY();
+        this.MODIFY_IVSPACE();
+
         Cipher cipher = Cipher.getInstance("AES/OFB/NoPadding");
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
         byte[] encrypted = cipher.doFinal(data.getBytes());
+
+        this.KEY_SAVE();
+
         return Base64.getEncoder().encodeToString(encrypted);
 
     }
 
-    public String decrypt_OFB(String eData) throws Exception {
+    public String encrypt_OFB(String data, String passwd) throws Exception {
+
+        this.MODIFY_KEY();
+        this.MODIFY_IVSPACE();
+
+        Cipher cipher = Cipher.getInstance("AES/OFB/NoPadding");
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
+        byte[] encrypted = cipher.doFinal(data.getBytes());
+
+        this.KEY_SAVE(true, passwd);
+
+        return Base64.getEncoder().encodeToString(encrypted);
+
+    }
+
+    public String encrypt_OFB(String data, String passwd, int degree_of_security, boolean off_limit) throws Exception {
+
+        this.MODIFY_KEY();
+        this.MODIFY_IVSPACE();
+
+        Cipher cipher = Cipher.getInstance("AES/OFB/NoPadding");
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
+        byte[] encrypted = cipher.doFinal(data.getBytes());
+
+        this.KEY_SAVE_SECURE(true, passwd, degree_of_security, off_limit);
+
+        return Base64.getEncoder().encodeToString(encrypted);
+
+    }
+
+    public String decrypt_OFB(String eData, String filename) throws Exception {
+
+        this.KEY_LOAD(filename);
+
+        Cipher cipher = Cipher.getInstance("AES/OFB/NoPadding");
+        cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec);
+        byte[] decrypted = cipher.doFinal(Base64.getDecoder().decode(eData));
+        return new String(decrypted);
+
+    }
+
+    public String decrypt_OFB(String eData, String filename, String passwd) throws Exception {
+
+        this.KEY_LOAD(filename, true, passwd);
 
         Cipher cipher = Cipher.getInstance("AES/OFB/NoPadding");
         cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec);
@@ -908,14 +1068,63 @@ public class AES {
 
     public String encrypt_CTR(String data) throws Exception {
 
+        this.MODIFY_KEY();
+        this.MODIFY_IVSPACE();
+
         Cipher cipher = Cipher.getInstance("AES/CTR/NoPadding");
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
         byte[] encrypted = cipher.doFinal(data.getBytes());
+
+        this.KEY_SAVE();
+
         return Base64.getEncoder().encodeToString(encrypted);
 
     }
 
-    public String decrypt_CTR(String eData) throws Exception {
+    public String encrypt_CTR(String data, String password) throws Exception {
+
+        this.MODIFY_KEY();
+        this.MODIFY_IVSPACE();
+
+        Cipher cipher = Cipher.getInstance("AES/CTR/NoPadding");
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
+        byte[] encrypted = cipher.doFinal(data.getBytes());
+
+        this.KEY_SAVE(true, password);
+
+        return Base64.getEncoder().encodeToString(encrypted);
+
+    }
+
+    public String encrypt_CTR(String data, String password, int degree_of_security, boolean off_limit) throws Exception {
+
+        this.MODIFY_KEY();
+        this.MODIFY_IVSPACE();
+
+        Cipher cipher = Cipher.getInstance("AES/CTR/NoPadding");
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
+        byte[] encrypted = cipher.doFinal(data.getBytes());
+
+        this.KEY_SAVE_SECURE(true, password, degree_of_security, off_limit);
+
+        return Base64.getEncoder().encodeToString(encrypted);
+
+    }
+
+    public String decrypt_CTR(String eData, String filename) throws Exception {
+
+        this.KEY_LOAD(filename);
+
+        Cipher cipher = Cipher.getInstance("AES/CTR/NoPadding");
+        cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec);
+        byte[] decrypted = cipher.doFinal(Base64.getDecoder().decode(eData));
+        return new String(decrypted);
+
+    }
+
+    public String decrypt_CTR(String eData, String filename, String passwd) throws Exception {
+
+        this.KEY_LOAD(filename, true, passwd);
 
         Cipher cipher = Cipher.getInstance("AES/CTR/NoPadding");
         cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec);
@@ -926,14 +1135,63 @@ public class AES {
 
     public String encrypt_GCM(String data) throws Exception {
         
+        this.MODIFY_KEY();
+        this.MODIFY_IVSPACE();
+
         Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
         byte[] encrypted = cipher.doFinal(data.getBytes());
+
+        this.KEY_SAVE();
+
         return Base64.getEncoder().encodeToString(encrypted);
 
     }
 
-    public String decrypt_GCM(String eData) throws Exception {
+    public String encrypt_GCM(String data, String passwd) throws Exception {
+        
+        this.MODIFY_KEY();
+        this.MODIFY_IVSPACE();
+
+        Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
+        byte[] encrypted = cipher.doFinal(data.getBytes());
+
+        this.KEY_SAVE(true, passwd);
+
+        return Base64.getEncoder().encodeToString(encrypted);
+
+    }
+
+    public String encrypt_GCM(String data, String passwd, int degree_of_security, boolean off_limit) throws Exception {
+        
+        this.MODIFY_KEY();
+        this.MODIFY_IVSPACE();
+
+        Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
+        byte[] encrypted = cipher.doFinal(data.getBytes());
+
+        this.KEY_SAVE_SECURE(true, passwd, degree_of_security, off_limit);
+
+        return Base64.getEncoder().encodeToString(encrypted);
+
+    }
+
+    public String decrypt_GCM(String eData, String filename) throws Exception {
+
+        this.KEY_LOAD(filename);
+        
+        Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
+        byte[] decrypted  = cipher.doFinal(Base64.getDecoder().decode(eData));
+        return new String(decrypted);
+
+    }
+
+    public String decrypt_GCM(String eData, String filename, String passwd) throws Exception {
+
+        this.KEY_LOAD(filename, true,passwd);
         
         Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
