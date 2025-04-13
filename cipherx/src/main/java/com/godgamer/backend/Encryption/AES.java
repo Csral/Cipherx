@@ -800,9 +800,45 @@ public class AES {
 
     public String encrypt_CBC(String data) throws Exception {
 
+        this.MODIFY_KEY();
+        this.MODIFY_IVSPACE();
+
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
         byte[] encrypted = cipher.doFinal(data.getBytes());
+
+        this.KEY_SAVE();
+
+        return Base64.getEncoder().encodeToString(encrypted);
+    
+    }
+
+    public String encrypt_CBC(String data, String passwd) throws Exception {
+
+        this.MODIFY_KEY();
+        this.MODIFY_IVSPACE();
+
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
+        byte[] encrypted = cipher.doFinal(data.getBytes());
+
+        this.KEY_SAVE(true, passwd);
+
+        return Base64.getEncoder().encodeToString(encrypted);
+    
+    }
+
+    public String encrypt_CBC(String data, String passwd, int degree_of_security, boolean off_limits) throws Exception {
+
+        this.MODIFY_KEY();
+        this.MODIFY_IVSPACE();
+
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
+        byte[] encrypted = cipher.doFinal(data.getBytes());
+
+        this.KEY_SAVE_SECURE(true, passwd, degree_of_security, off_limits);
+
         return Base64.getEncoder().encodeToString(encrypted);
     
     }
