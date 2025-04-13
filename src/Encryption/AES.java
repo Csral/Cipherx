@@ -10,10 +10,16 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
+import Handler.HandlerWrite;
+import Handler.Block;
+import Handler.Encrypter;
+import Handler.HandlerRead;
+
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
 public class AES {
@@ -81,10 +87,12 @@ public class AES {
     private KeyGenerator keyGen;
     private SecretKey secretKey;
     private IvParameterSpec ivSpec;
+    private Encrypter extra_Encrypter;
 
     AES() throws Exception {
         keyGen = KeyGenerator.getInstance("AES");
         keyGen.init(256);
+        extra_Encrypter = new Encrypter();
         secretKey = keyGen.generateKey();
         this.MODIFY_IVSPACE();
     }
@@ -98,9 +106,15 @@ public class AES {
 
     private byte[] RANDOM_SPACE_GEN() {
 
-        byte[] res = new byte[16];
-        new SecureRandom().nextBytes(res);
-        return res;
+        try {
+            byte[] res = new byte[16];
+            SecureRandom.getInstanceStrong().nextBytes(res);
+            return res;
+        } catch (NoSuchAlgorithmException e) {
+            byte[] res = new byte[16];
+            new SecureRandom().nextBytes(res);
+            return res;
+        }
 
     }
 
@@ -116,9 +130,7 @@ public class AES {
 
         String filename = "key_" + System.currentTimeMillis() + "_" + ( (int) (Math.floor(Math.random()*2792)) & 2792) + ".obj.key";
 
-        try (FileOutputStream fos = new FileOutputStream(filename);
-            ObjectOutputStream oos = new ObjectOutputStream(fos)
-        ) {
+        try (HandlerWrite oos = new HandlerWrite(filename);) {
 
             byte[] keyObj = this.secretKey.getEncoded();
             byte[] ivSpecObj = this.ivSpec.getIV();
@@ -128,24 +140,38 @@ public class AES {
             SecureRandom mRandom = SecureRandom.getInstanceStrong();
             byte[] Rdata = new byte[mkey];
 
-            int times = mRandom.ints().reduce(0, (a, b) -> a ^ b) + mRandom.ints().sum();
+            int times = ( ( mRandom.ints(100, 1, 1000).reduce(0, (a, b) -> a ^ b) + mRandom.ints(100, 1, 1000).sum() ) & 511 ) + 1;
 
             oos.writeInt(times);
-
+            
             for (int i = 0; i < times; i++) {
 
+                Block tmp_block = new Block(i,System.currentTimeMillis(), mkey);
                 mRandom.nextBytes(Rdata);
-                oos.writeObject(Rdata);
+                tmp_block.updateData(Rdata);
+
+                oos.writeBlock(tmp_block);
 
             }
 
-            oos.writeObject(keyObj);
-            oos.writeObject(ivSpecObj);
+            Block tmp_Block = new Block(mRandom.nextInt(), System.currentTimeMillis(), keyObj.length);
+            tmp_Block.updateData(keyObj);
+
+            oos.writeBlock(tmp_Block);
+
+            tmp_Block.timestamp = System.currentTimeMillis();
+            tmp_Block.updateData(ivSpecObj);
+            tmp_Block.len = ivSpecObj.length;
+
+            oos.writeBlock(tmp_Block);
 
             while (times > 0) {
 
+                Block tmp_block = new Block(times,System.currentTimeMillis(), mkey);
                 mRandom.nextBytes(Rdata);
-                oos.writeObject(Rdata);
+                tmp_block.updateData(Rdata);
+
+                oos.writeBlock(tmp_block);
                 times--;
 
             }
@@ -161,9 +187,7 @@ public class AES {
 
         String filename = "key_" + ( ( (System.currentTimeMillis() << sr.nextInt() ) & 32) ^ sr.nextInt()) + "_" + ( (int) (Math.floor(Math.random()*2792) + sr.ints(100,1,500).reduce(0, (a, b) -> a ^ b)) & 2792) + ".obj.key";
 
-        try (FileOutputStream fos = new FileOutputStream(filename);
-            ObjectOutputStream oos = new ObjectOutputStream(fos)
-        ) {
+        try (HandlerWrite hos = new HandlerWrite(filename)) {
 
             byte[] keyObj = this.secretKey.getEncoded();
             byte[] ivSpecObj = this.ivSpec.getIV();
@@ -178,13 +202,10 @@ public class AES {
             int mkey = this.generateKey(filename+passwd) * 255;
             int pkey = this.generateKey2(passwd);
             int pkey2 = this.generateKey(passwd); //* Generate normal pkey */
-            
-            //! Generate key 2 is for n fake timed times.
-            //! ( mkey ^ pkey ) & (n-1) is where it'll be randomly placed
 
             SecureRandom mRandom = SecureRandom.getInstanceStrong();
 
-            int n = Math.abs(cxor(pkey2,pkey));
+            int n = (Math.abs(cxor(pkey2,pkey)) % 1000) + 1;
             int pos = (pkey ^ pkey2) % (n+1);
 
             int mtimes = 0;
@@ -199,30 +220,47 @@ public class AES {
 
                 if ( (n ^ pos) == 0) {
                     mtimes = ftimes;
-                    oos.writeInt(ftimes ^ hashedTimes);
+                    hos.writeInt(ftimes ^ hashedTimes);
                     n--;
                 } else {
-                    oos.writeInt(ftimes ^ hashedTimes);
+                    hos.writeInt(ftimes ^ hashedTimes);
                     n--;
                 }
 
             }
 
             int times = mtimes;
+            long kpos = (Math.abs( extra_Encrypter.rotl(extra_Encrypter.bitMan_a(times ^ extra_Encrypter.rotl(pos, n+1)), extra_Encrypter.bitMan_c(extra_Encrypter.rotl(pkey, pkey2 % 63))) ) % times) + 1;
 
             for (int i = 0; i < times; i++) {
 
-                int size = 8 + mRandom.nextInt(32);
-                byte[] Rdata = new byte[size];
-                mRandom.nextBytes(Rdata);
-                oos.writeObject(Rdata);
+                if (i == kpos) {
+                    //* Randomly write actual key somewhere :D */
+                    Block keyBlock = new Block(57490*mRandom.nextInt(), System.currentTimeMillis()*mRandom.nextInt(), keyObj.length);
+                    keyBlock.updateData(keyObj);
+
+                    hos.writeBlock(keyBlock);
+               
+                } else {
+
+                    SecretKey tmp = keyGen.generateKey();
+                    byte[] tmpKeyObj = tmp.getEncoded();
+
+                    if (encrypt) tmpKeyObj = BYTE_E_MODIFY(passwd, tmpKeyObj);
+
+                    Block dtmp = new Block(47283*mRandom.nextInt(),System.currentTimeMillis() * mRandom.nextInt(),tmpKeyObj.length);
+                    
+                    dtmp.updateData(tmpKeyObj);
+                    hos.writeBlock(dtmp);
+
+                    dtmp = null;
+                
+                }
 
             }
-            // todo Store fake key (n times, n derived from passwd hash) (Store newTimes somewhere in between these n fake keys derived by password) and same for ivspec  //
-            oos.writeObject(keyObj);
-
+            
             int pkey3 = generateKey3(passwd);
-            n = Math.abs(cxor(pkey3,pkey * pkey2));
+            n = (Math.abs(cxor(pkey3,pkey * pkey2)) % 1000) + 1;
             pos = (pkey3 ^ pkey2) % (n+1);
 
             hash = digest.digest((pkey + pkey2 + pkey3 + "").getBytes(StandardCharsets.UTF_8));
@@ -230,40 +268,53 @@ public class AES {
 
             while (n > 0) {
 
-                int ftimes = ( ( ((times ^ pkey) & mkey) + ( mRandom.ints(146, 100, 10000).reduce(0, (a, b) -> a ^ b) + mRandom.ints(146, 100, 10000).sum() ) ) & 511 ) + 1;
+                int f2times = (984328724 + sr.nextInt(238849242) + ( sr.ints(256, 100, 5000).reduce(0, (a, b) -> a ^ b) & 0xFFFF) & 512) + 1;
 
                 if ( (n ^ pos) == 0) {
-                    mtimes = ftimes;
-                    oos.writeInt(ftimes ^ hashedTimes);
+                    mtimes = f2times;
+                    hos.writeInt(f2times ^ hashedTimes);
                     n--;
                 } else {
-                    oos.writeInt(ftimes ^ hashedTimes);
+                    hos.writeInt(f2times ^ hashedTimes);
                     n--;
                 }
 
             }
 
             times = mtimes;
+            kpos = (Math.abs( extra_Encrypter.rotl(extra_Encrypter.bitMan_a(times ^ extra_Encrypter.rotl(pos ^ pkey2, n+1)), extra_Encrypter.bitMan_c(extra_Encrypter.rotl(pkey ^ pkey2, pkey3 % 63))) ) % times) + 1;
 
             for (int i = 0; i < times; i++) {
 
-                int size = 8 + mRandom.nextInt(32);
-                byte[] Rdata = new byte[size];
-                mRandom.nextBytes(Rdata);
-                oos.writeObject(Rdata);
+                if (i == kpos) {
+                  
+                    Block iVBlock = new Block(37908*mRandom.nextInt(), System.currentTimeMillis()*mRandom.nextInt(), ivSpecObj.length);
+                    iVBlock.updateData(ivSpecObj);
+                    hos.writeBlock(iVBlock);
+
+                } else {
+                  
+                    Block tmp = new Block(84023*mRandom.nextInt(),System.currentTimeMillis()*mRandom.nextInt(),ivSpecObj.length);
+                    if (encrypt) tmp.updateData(this.BYTE_E_MODIFY(passwd, this.RANDOM_SPACE_GEN()));
+                    else tmp.updateData(this.RANDOM_SPACE_GEN());
+                    hos.writeBlock(tmp);
+                
+                }
 
             }
 
-            oos.writeObject(ivSpecObj);
-
+            
             times = ( ( ((times ^ mRandom.nextInt()) & (mRandom.nextInt() ^ mkey)) + ( mRandom.ints(346, 1000, 10000).reduce(0, (a, b) -> a ^ b) + mRandom.ints(46, 1000, 10000).sum() ) ) & 511 ) + 1;
+            times %= 1000;
+            times++;
 
             while (times > 0) {
 
                 int size = 8 + mRandom.nextInt(32);
-                byte[] Rdata = new byte[size];
-                mRandom.nextBytes(Rdata);
-                oos.writeObject(Rdata);
+                Block tmp = new Block(73033*mRandom.nextInt(),System.currentTimeMillis()*mRandom.nextInt(),size);
+                mRandom.nextBytes(tmp.data);
+
+                hos.writeBlock(tmp);
                 times--;
 
             }
@@ -293,9 +344,7 @@ public class AES {
 
         String filename = "key_" + ( ( (System.currentTimeMillis() << sr.nextInt() ) & 32) ^ sr.nextInt()) + "_" + ( (int) (Math.floor(Math.random()*2792) + sr.ints(100,1,500).reduce(0, (a, b) -> a ^ b)) & 2792) + ".obj.key";
 
-        try (FileOutputStream fos = new FileOutputStream(filename);
-            ObjectOutputStream oos = new ObjectOutputStream(fos)
-        ) {
+        try (HandlerWrite hos = new HandlerWrite(filename)) {
 
             byte[] keyObj = this.secretKey.getEncoded();
             byte[] ivSpecObj = this.ivSpec.getIV();
@@ -310,13 +359,10 @@ public class AES {
             int mkey = this.generateKey(filename+passwd) * 255;
             int pkey = this.generateKey2(passwd);
             int pkey2 = this.generateKey(passwd); //* Generate normal pkey */
-            
-            //! Generate key 2 is for n fake timed times.
-            //! (pkey ^ pkey2) % (n+1) is where it'll be randomly placed
 
             SecureRandom mRandom = SecureRandom.getInstanceStrong();
 
-            int n = Math.abs(cxor(pkey2,pkey));
+            int n = (Math.abs(cxor(pkey2,pkey)) % 1000) + 1;
             int pos = (pkey ^ pkey2) % (n+1);
 
             int mtimes = 0;
@@ -331,30 +377,47 @@ public class AES {
 
                 if ( (n ^ pos) == 0) {
                     mtimes = ftimes;
-                    oos.writeInt(ftimes ^ hashedTimes);
+                    hos.writeInt(ftimes ^ hashedTimes);
                     n--;
                 } else {
-                    oos.writeInt(ftimes ^ hashedTimes);
+                    hos.writeInt(ftimes ^ hashedTimes);
                     n--;
                 }
 
             }
 
             int times = mtimes;
+            long kpos = (Math.abs( extra_Encrypter.rotl(extra_Encrypter.bitMan_a(times ^ extra_Encrypter.rotl(pos, n+1)), extra_Encrypter.bitMan_c(extra_Encrypter.rotl(pkey, pkey2 % 63))) ) % times) + 1;
 
             for (int i = 0; i < times; i++) {
 
-                int size = 8 + mRandom.nextInt(32);
-                byte[] Rdata = new byte[size];
-                mRandom.nextBytes(Rdata);
-                oos.writeObject(Rdata);
+                if (i == kpos) {
+                    //* Randomly write actual key somewhere :D */
+                    Block keyBlock = new Block(83490*mRandom.nextInt(), System.currentTimeMillis()*mRandom.nextInt(), keyObj.length);
+                    keyBlock.updateData(keyObj);
+
+                    hos.writeBlock(keyBlock);
+               
+                } else {
+
+                    SecretKey tmp = keyGen.generateKey();
+                    byte[] tmpKeyObj = tmp.getEncoded();
+
+                    if (encrypt) tmpKeyObj = BYTE_E_MODIFY(passwd, tmpKeyObj);
+
+                    Block dtmp = new Block(65783*mRandom.nextInt(),System.currentTimeMillis() * mRandom.nextInt(),tmpKeyObj.length);
+                    
+                    dtmp.updateData(tmpKeyObj);
+                    hos.writeBlock(dtmp);
+
+                    dtmp = null;
+                
+                }
 
             }
-            // todo Store fake key (n times, n derived from passwd hash) (Store newTimes somewhere in between these n fake keys derived by password) and same for ivspec  //
-            oos.writeObject(keyObj);
-
+            
             int pkey3 = generateKey3(passwd);
-            n = Math.abs(cxor(pkey3,pkey * pkey2));
+            n = (Math.abs(cxor(pkey3,pkey * pkey2)) % 1000) + 1;
             pos = (pkey3 ^ pkey2) % (n+1);
 
             hash = digest.digest((pkey + pkey2 + pkey3 + "").getBytes(StandardCharsets.UTF_8));
@@ -362,40 +425,53 @@ public class AES {
 
             while (n > 0) {
 
-                int ftimes = ( ( ((times ^ pkey) & mkey) + ( mRandom.ints(100*multiplicity, 1, 1000*(multiplicity2)).reduce(0, (a, b) -> a ^ b) + mRandom.ints(100*multiplicity, 1, 1000*(multiplicity2)).sum() ) & degree ) ) + 1;
+                int f2times = 984328*Math.abs(multiplicity-multiplicity2) + sr.nextInt(2388429*(multiplicity+multiplicity2)) + ( sr.ints(256*multiplicity, 100, 5000*multiplicity2).reduce(0, (a, b) -> a ^ b) & (0xFFFF << (degree % 31)) );
 
                 if ( (n ^ pos) == 0) {
-                    mtimes = ftimes;
-                    oos.writeInt(ftimes ^ hashedTimes);
+                    mtimes = f2times;
+                    hos.writeInt(f2times ^ hashedTimes);
                     n--;
                 } else {
-                    oos.writeInt(ftimes ^ hashedTimes);
+                    hos.writeInt(f2times ^ hashedTimes);
                     n--;
                 }
 
             }
 
             times = mtimes;
+            kpos = (Math.abs( extra_Encrypter.rotl(extra_Encrypter.bitMan_a(times ^ extra_Encrypter.rotl(pos ^ pkey2, n+1)), extra_Encrypter.bitMan_c(extra_Encrypter.rotl(pkey ^ pkey2, pkey3 % 63))) ) % times) + 1;
 
             for (int i = 0; i < times; i++) {
 
-                int size = 8 + mRandom.nextInt(32);
-                byte[] Rdata = new byte[size];
-                mRandom.nextBytes(Rdata);
-                oos.writeObject(Rdata);
+                if (i == kpos) {
+                  
+                    Block iVBlock = new Block(97908*mRandom.nextInt(), System.currentTimeMillis()*mRandom.nextInt(), ivSpecObj.length);
+                    iVBlock.updateData(ivSpecObj);
+                    hos.writeBlock(iVBlock);
+
+                } else {
+                  
+                    Block tmp = new Block(54023*mRandom.nextInt(),System.currentTimeMillis()*mRandom.nextInt(),ivSpecObj.length);
+                    if (encrypt) tmp.updateData(this.BYTE_E_MODIFY(passwd, this.RANDOM_SPACE_GEN()));
+                    else tmp.updateData(this.RANDOM_SPACE_GEN());
+                    hos.writeBlock(tmp);
+                
+                }
 
             }
 
-            oos.writeObject(ivSpecObj);
-
-            times = ( ( ((times ^ mRandom.nextInt()) & (mRandom.nextInt() ^ mkey)) + ( mRandom.ints(346*multiplicity, 1000, 10000*multiplicity2).reduce(0, (a, b) -> a ^ b) + mRandom.ints(46*multiplicity, 1000, 10000*multiplicity2).sum() ) ) & degree ) + 1;
+            
+            times = ( ( ((times ^ mRandom.nextInt()) & (mRandom.nextInt() ^ mkey)) + ( mRandom.ints(346, 1000, 10000).reduce(0, (a, b) -> a ^ b) + mRandom.ints(46, 1000, 10000).sum() ) ) & 511 ) + 1;
+            times %= 1000;
+            times++;
 
             while (times > 0) {
 
                 int size = 8 + mRandom.nextInt(32);
-                byte[] Rdata = new byte[size];
-                mRandom.nextBytes(Rdata);
-                oos.writeObject(Rdata);
+                Block tmp = new Block(87033*mRandom.nextInt(),System.currentTimeMillis()*mRandom.nextInt(),size);
+                mRandom.nextBytes(tmp.data);
+
+                hos.writeBlock(tmp);
                 times--;
 
             }
@@ -408,18 +484,25 @@ public class AES {
 
     public void KEY_LOAD(String filename) throws Exception {
 
-        try (FileInputStream fis = new FileInputStream(filename);
-            ObjectInputStream ois = new ObjectInputStream(fis)) {
+        try (HandlerRead ois = new HandlerRead(filename)) {
 
                 int times = ois.readInt();
 
                 while (times > 0) {
-                    ois.readObject();
+                    Block ans = ois.readBlock();
+                    ois.readByte(ans);
                     times--;
                 }
 
-                byte[] keyBytes = (byte[]) ois.readObject();
-                byte[] ivBytes = (byte[]) ois.readObject();
+                Block tmp = ois.readBlock();
+                ois.readByte(tmp);
+
+                byte[] keyBytes = tmp.data;
+
+                tmp = ois.readBlock();
+                ois.readByte(tmp);
+
+                byte[] ivBytes = tmp.data;
 
                 this.secretKey = new SecretKeySpec(keyBytes, "AES");
                 this.ivSpec = new IvParameterSpec(ivBytes);
@@ -441,13 +524,12 @@ public class AES {
 
     public void KEY_LOAD(String filename, boolean encrypted, String passwd) throws Exception {
 
-        try (FileInputStream fis = new FileInputStream(filename);
-            ObjectInputStream ois = new ObjectInputStream(fis)) {
+        try (HandlerRead his = new HandlerRead(filename)) {
 
                 int pkey = this.generateKey2(passwd);
                 int pkey2 = this.generateKey(passwd); //* Generate normal pkey */
 
-                int n = Math.abs(cxor(pkey2,pkey));
+                int n = (Math.abs(cxor(pkey2,pkey)) % 1000) + 1;
                 int pos = (pkey^pkey2) % (n+1);
 
                 int times = 0, mtimes = 0;
@@ -458,7 +540,7 @@ public class AES {
 
                 while (n > 0) {
 
-                    times = ois.readInt();
+                    times = his.readInt();
 
                     if ( (n ^ pos) == 0) {
                         mtimes = times ^ hashedTimes;
@@ -470,21 +552,39 @@ public class AES {
 
                 times = mtimes;
 
-                while (times > 0) {
-                    ois.readObject();
-                    times--;
-                }
+                long kpos = (Math.abs( extra_Encrypter.rotl(extra_Encrypter.bitMan_a(times ^ extra_Encrypter.rotl(pos, n+1)), extra_Encrypter.bitMan_c(extra_Encrypter.rotl(pkey, pkey2 % 63))) ) % times) + 1;
 
-                byte[] keyBytes = (byte[]) ois.readObject();
+                Block keyBlock = new Block();
+                byte[] keyBytes = new byte[32];
+
+                for (int i = 0 ; i < times ; i++) {
+                    
+                    if (i == kpos) {
+                    
+                        keyBlock = his.readBlock();
+                        his.readByte(keyBlock);
+                        keyBytes = keyBlock.data;
+
+                    } else {
+                    
+                        Block rtmp = his.readBlock();
+                        his.readByte(rtmp);
+                    
+                    }
+
+                }
 
                 int pkey3 = generateKey3(passwd);
 
-                n = Math.abs(cxor(pkey3,pkey * pkey2));
+                hash = digest.digest((pkey + pkey2 + pkey3 + "").getBytes(StandardCharsets.UTF_8));
+                hashedTimes = ByteBuffer.wrap(hash).getInt();
+
+                n = (Math.abs(cxor(pkey3,pkey * pkey2)) % 1000) + 1;
                 pos = (pkey3 ^ pkey2) % (n+1);
 
                 while (n > 0) {
 
-                    times = ois.readInt();
+                    times = his.readInt();
 
                     if ( (n ^ pos) == 0) {
                         mtimes = times ^ hashedTimes;
@@ -495,13 +595,22 @@ public class AES {
                 }
 
                 times = mtimes;
+                kpos = (Math.abs( extra_Encrypter.rotl(extra_Encrypter.bitMan_a(times ^ extra_Encrypter.rotl(pos ^ pkey2, n+1)), extra_Encrypter.bitMan_c(extra_Encrypter.rotl(pkey ^ pkey2, pkey3 % 63))) ) % times) + 1;
 
-                while (times > 0) {
-                    ois.readObject();
-                    times--;
+                Block ivBlock = new Block();
+                byte[] ivBytes = new byte[16];
+
+                for (int i = 0 ; i < times; i++) {
+
+                    if (i == kpos) {
+                        ivBlock = his.readBlock();
+                        his.readByte(ivBlock);
+                        ivBytes = ivBlock.data;
+                    } else {
+                        Block rtmp = his.readBlock();
+                        his.readByte(rtmp);
+                    }
                 }
-
-                byte[] ivBytes = (byte[]) ois.readObject();
 
                 if (encrypted) {
 
