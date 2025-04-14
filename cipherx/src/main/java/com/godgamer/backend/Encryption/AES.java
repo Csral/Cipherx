@@ -88,6 +88,7 @@ public class AES {
     private SecretKey secretKey;
     private IvParameterSpec ivSpec;
     private Encrypter extra_Encrypter;
+    private String active_encrypter_filename;
 
     AES() throws Exception {
         keyGen = KeyGenerator.getInstance("AES");
@@ -95,6 +96,10 @@ public class AES {
         extra_Encrypter = new Encrypter();
         secretKey = keyGen.generateKey();
         this.MODIFY_IVSPACE();
+    }
+
+    public String get_active_encrypted_filename() {
+        return this.active_encrypter_filename;
     }
 
     public void MODIFY_KEY() throws Exception {
@@ -176,7 +181,9 @@ public class AES {
 
             }
 
+            this.active_encrypter_filename = filename;
             return filename;
+
         }
 
     }
@@ -319,6 +326,7 @@ public class AES {
 
             }
 
+            this.active_encrypter_filename = filename;
             return filename;
 
         }
@@ -476,6 +484,7 @@ public class AES {
 
             }
 
+            this.active_encrypter_filename = filename;
             return filename;
 
         }
@@ -807,7 +816,7 @@ public class AES {
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
         byte[] encrypted = cipher.doFinal(data.getBytes());
 
-        this.KEY_SAVE();
+        this.active_encrypter_filename = this.KEY_SAVE();
 
         return Base64.getEncoder().encodeToString(encrypted);
     
@@ -822,7 +831,7 @@ public class AES {
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
         byte[] encrypted = cipher.doFinal(data.getBytes());
 
-        this.KEY_SAVE(true, passwd);
+        this.active_encrypter_filename = this.KEY_SAVE(true, passwd);
 
         return Base64.getEncoder().encodeToString(encrypted);
     
@@ -837,7 +846,7 @@ public class AES {
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
         byte[] encrypted = cipher.doFinal(data.getBytes());
 
-        this.KEY_SAVE_SECURE(true, passwd, degree_of_security, off_limit);
+        this.active_encrypter_filename = this.KEY_SAVE_SECURE(true, passwd, degree_of_security, off_limit);
 
         return Base64.getEncoder().encodeToString(encrypted);
     
@@ -874,7 +883,7 @@ public class AES {
         cipher.init(Cipher.ENCRYPT_MODE, secretKey);
         byte[] encrypted = cipher.doFinal(data.getBytes());
 
-        this.KEY_SAVE();
+        this.active_encrypter_filename = this.KEY_SAVE();
 
         return Base64.getEncoder().encodeToString(encrypted);
 
@@ -889,7 +898,7 @@ public class AES {
         cipher.init(Cipher.ENCRYPT_MODE, secretKey);
         byte[] encrypted = cipher.doFinal(data.getBytes());
 
-        this.KEY_SAVE(true, passwd);
+        this.active_encrypter_filename = this.KEY_SAVE(true, passwd);
 
         return Base64.getEncoder().encodeToString(encrypted);
 
@@ -904,7 +913,7 @@ public class AES {
         cipher.init(Cipher.ENCRYPT_MODE, secretKey);
         byte[] encrypted = cipher.doFinal(data.getBytes());
 
-        this.KEY_SAVE_SECURE(true, passwd, degree_of_security, off_limit);
+        this.active_encrypter_filename = this.KEY_SAVE_SECURE(true, passwd, degree_of_security, off_limit);
 
         return Base64.getEncoder().encodeToString(encrypted);
 
@@ -941,7 +950,7 @@ public class AES {
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
         byte[] encrypted = cipher.doFinal(data.getBytes());
 
-        this.KEY_SAVE();
+        this.active_encrypter_filename = this.KEY_SAVE();
 
         return Base64.getEncoder().encodeToString(encrypted);
 
@@ -956,7 +965,7 @@ public class AES {
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
         byte[] encrypted = cipher.doFinal(data.getBytes());
 
-        this.KEY_SAVE(true, passwd);
+        this.active_encrypter_filename = this.KEY_SAVE(true, passwd);
 
         return Base64.getEncoder().encodeToString(encrypted);
 
@@ -971,7 +980,7 @@ public class AES {
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
         byte[] encrypted = cipher.doFinal(data.getBytes());
 
-        this.KEY_SAVE_SECURE(true, passwd, degree_of_security, off_limit);
+        this.active_encrypter_filename = this.KEY_SAVE_SECURE(true, passwd, degree_of_security, off_limit);
 
         return Base64.getEncoder().encodeToString(encrypted);
 
@@ -1008,7 +1017,7 @@ public class AES {
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
         byte[] encrypted = cipher.doFinal(data.getBytes());
 
-        this.KEY_SAVE();
+        this.active_encrypter_filename = this.KEY_SAVE();
 
         return Base64.getEncoder().encodeToString(encrypted);
 
@@ -1023,7 +1032,7 @@ public class AES {
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
         byte[] encrypted = cipher.doFinal(data.getBytes());
 
-        this.KEY_SAVE(true, passwd);
+        this.active_encrypter_filename = this.KEY_SAVE(true, passwd);
 
         return Base64.getEncoder().encodeToString(encrypted);
 
@@ -1038,7 +1047,7 @@ public class AES {
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
         byte[] encrypted = cipher.doFinal(data.getBytes());
 
-        this.KEY_SAVE_SECURE(true, passwd, degree_of_security, off_limit);
+        this.active_encrypter_filename = this.KEY_SAVE_SECURE(true, passwd, degree_of_security, off_limit);
 
         return Base64.getEncoder().encodeToString(encrypted);
 
@@ -1075,7 +1084,7 @@ public class AES {
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
         byte[] encrypted = cipher.doFinal(data.getBytes());
 
-        this.KEY_SAVE();
+        this.active_encrypter_filename = this.KEY_SAVE();
 
         return Base64.getEncoder().encodeToString(encrypted);
 
@@ -1090,7 +1099,7 @@ public class AES {
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
         byte[] encrypted = cipher.doFinal(data.getBytes());
 
-        this.KEY_SAVE(true, password);
+        this.active_encrypter_filename = this.KEY_SAVE(true, password);
 
         return Base64.getEncoder().encodeToString(encrypted);
 
@@ -1105,7 +1114,7 @@ public class AES {
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
         byte[] encrypted = cipher.doFinal(data.getBytes());
 
-        this.KEY_SAVE_SECURE(true, password, degree_of_security, off_limit);
+        this.active_encrypter_filename = this.KEY_SAVE_SECURE(true, password, degree_of_security, off_limit);
 
         return Base64.getEncoder().encodeToString(encrypted);
 
@@ -1142,7 +1151,7 @@ public class AES {
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
         byte[] encrypted = cipher.doFinal(data.getBytes());
 
-        this.KEY_SAVE();
+        this.active_encrypter_filename = this.KEY_SAVE();
 
         return Base64.getEncoder().encodeToString(encrypted);
 
@@ -1157,7 +1166,7 @@ public class AES {
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
         byte[] encrypted = cipher.doFinal(data.getBytes());
 
-        this.KEY_SAVE(true, passwd);
+        this.active_encrypter_filename = this.KEY_SAVE(true, passwd);
 
         return Base64.getEncoder().encodeToString(encrypted);
 
@@ -1172,7 +1181,7 @@ public class AES {
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
         byte[] encrypted = cipher.doFinal(data.getBytes());
 
-        this.KEY_SAVE_SECURE(true, passwd, degree_of_security, off_limit);
+        this.active_encrypter_filename = this.KEY_SAVE_SECURE(true, passwd, degree_of_security, off_limit);
 
         return Base64.getEncoder().encodeToString(encrypted);
 
