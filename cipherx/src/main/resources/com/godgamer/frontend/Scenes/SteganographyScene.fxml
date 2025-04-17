@@ -1,12 +1,90 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.godgamer.frontend.SteganographySceneController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.godgamer.frontend.SteganographySceneController">
    <children>
-      <Label layoutX="132.0" layoutY="130.0" prefHeight="18.0" prefWidth="302.0" text="Steganography" />
+      <!-- Title Label -->
+      <Label alignment="CENTER" layoutX="200.0" layoutY="17.0" prefHeight="25.0" prefWidth="250.0" text="Steganography Tool" style="-fx-font-weight: bold;">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+
+      <!-- Back Button -->
       <Button id="backBtn" layoutX="25.0" layoutY="14.0" mnemonicParsing="false" onAction="#backToMain" text="Back" />
+
+      <!-- Operation Type (Embed/Extract) -->
+      <Label layoutX="74.0" layoutY="60.0" text="Operation Type">
+         <font>
+            <Font size="13.0" />
+         </font>
+      </Label>
+      <HBox layoutX="230.0" layoutY="58.0" spacing="10.0">
+         <children>
+            <RadioButton text="Embed" selected="true" toggleGroup="operationType" />
+            <RadioButton text="Extract" toggleGroup="operationType" />
+         </children>
+      </HBox>
+
+      <!-- Input Pane -->
+      <Pane id="InputPane" layoutX="74.0" layoutY="95.0" prefHeight="50.0" prefWidth="550.0">
+         <children>
+            <TextField fx:id="inputTB" layoutX="0.0" layoutY="0.0" prefHeight="25.0" prefWidth="446.0" promptText="Enter Text or File Path" />
+            <Button id="browseBtn" fx:id="browseBtn" layoutX="456.0" layoutY="0.0" mnemonicParsing="false" onAction="#getFilePath" text="Browse" />
+         </children>
+      </Pane>
+
+      <!-- Carrier File Selection -->
+      <Label layoutX="74.0" layoutY="150.0" text="Carrier File">
+         <font>
+            <Font size="13.0" />
+         </font>
+      </Label>
+      <TextField fx:id="carrierFileTB" layoutX="230.0" layoutY="146.0" prefHeight="25.0" prefWidth="300.0" promptText="Select Carrier File" />
+      <Button id="carrierBrowseBtn" fx:id="carrierBrowseBtn" layoutX="540.0" layoutY="146.0" mnemonicParsing="false" onAction="#getCarrierFilePath" text="Browse" />
+
+      <!-- Output File Selection -->
+      <Label layoutX="74.0" layoutY="185.0" text="Output File">
+         <font>
+            <Font size="13.0" />
+         </font>
+      </Label>
+      <TextField fx:id="outputFileTB" layoutX="230.0" layoutY="181.0" prefHeight="25.0" prefWidth="300.0" promptText="Save Output File" />
+      <Button id="outputBrowseBtn" fx:id="outputBrowseBtn" layoutX="540.0" layoutY="181.0" mnemonicParsing="false" onAction="#getOutputFilePath" text="Browse" />
+
+      <!-- Advanced Options ScrollPane -->
+      <ScrollPane id="advScrollPane" fx:id="scrollPanel" layoutX="74.0" layoutY="230.0" prefHeight="120.0" prefWidth="550.0">
+         <content>
+            <VBox fx:id="scrollContentBox" prefHeight="300.0" prefWidth="530.0">
+               <children>
+                  <Label text="Advanced Options Placeholder" />
+               </children>
+            </VBox>
+         </content>
+      </ScrollPane>
+      <Label layoutX="74.0" layoutY="210.0" text="Advanced Options">
+         <font>
+            <Font size="13.0" />
+         </font>
+      </Label>
+
+      <!-- Execute Button -->
+      <Button id="executeBtn" layoutX="274.0" layoutY="360.0" mnemonicParsing="false" onAction="#executeSteganography" text="Execute" />
+
+      <!-- Dark Mode CheckBox -->
+      <CheckBox layoutX="550.0" layoutY="18.0" mnemonicParsing="false" onAction="#changeMode" text="Dark Mode">
+         <font>
+            <Font size="13.0" />
+         </font>
+      </CheckBox>
    </children>
 </AnchorPane>

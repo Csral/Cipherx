@@ -78,9 +78,16 @@ public class App extends Application {
     }
 
     static void setRoot(String fxml, String darkCSS, String lightCSS) throws IOException {
-        scene.setRoot(loadFXML(fxml));
-        changeCSS(isDarkMode ? darkCSS : lightCSS);
-    }
+        try {
+            Parent root = loadFXML(fxml);
+            scene.setRoot(root);
+            changeCSS(isDarkMode ? darkCSS : lightCSS);
+            System.out.println("Successfully switched to: " + fxml);
+        } catch (IOException e) {
+            System.err.println("Failed to load FXML: " + fxml);
+            e.printStackTrace();
+        }
+    }    
 
     // load new scene's fxml
     public static Parent loadFXML(String fxml) throws IOException {

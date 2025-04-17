@@ -1,0 +1,73 @@
+/* General Background and Text */
+.root {
+    -fx-background-color: #f5f5f5;
+    -fx-text-fill: #333333;
+}
+
+/* Labels */
+.label {
+    -fx-font-size: 14px;
+    -fx-font-family: "Arial";
+    -fx-text-fill: #333333;
+}
+
+/* Buttons */
+.button {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px 10px;
+    -fx-font-size: 14px;
+    -fx-text-fill: #333333;
+}
+
+.button:hover {
+    -fx-background-color: #e0e0e0;
+}
+
+/* Text Fields and Password Fields */
+.text-field, .password-field {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px;
+    -fx-font-size: 14px;
+    -fx-text-fill: #333333;
+}
+
+.text-field:focused, .password-field:focused {
+    -fx-border-color: #66afe9;
+    -fx-border-radius: 5px;
+}
+
+/* ChoiceBox */
+.choice-box {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px;
+    -fx-font-size: 14px;
+    -fx-text-fill: #333333;
+}
+
+.choice-box:focused {
+    -fx-border-color: #66afe9;
+    -fx-border-radius: 5px;
+}
+
+/* ScrollPane */
+.scroll-pane {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 5px;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: #ffffff;
+}
+
+/* CheckBox and RadioButton */
+.check-box, .radio-button {
+    -fx-font-size: 14px;
+    -fx-text-fill: #333333;
+}
