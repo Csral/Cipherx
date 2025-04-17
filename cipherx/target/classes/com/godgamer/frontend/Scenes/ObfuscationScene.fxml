@@ -4,80 +4,73 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.godgamer.frontend.ObfuscationSceneController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.godgamer.frontend.ObfuscationSceneController">
    <children>
-      <!-- Title Label -->
-      <Label alignment="CENTER" layoutX="200.0" layoutY="17.0" prefHeight="25.0" prefWidth="250.0" text="Obfuscation Tool" style="-fx-font-weight: bold;">
-         <font>
-            <Font size="16.0" />
-         </font>
-      </Label>
 
       <!-- Back Button -->
-      <Button id="backBtn" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#backToMain" text="Back" />
+      <Button id="backBtn" layoutX="25.0" layoutY="14.0" mnemonicParsing="false" onAction="#backToMain" text="Back" />
 
-      <!-- Input Pane -->
-      <Pane id="InputPane" layoutX="74.0" layoutY="60.0" prefHeight="50.0" prefWidth="550.0">
+      <!-- Operation Type -->
+      <HBox layoutX="230.0" layoutY="58.0" spacing="10.0">
          <children>
-            <TextField fx:id="inputTB" layoutX="0.0" layoutY="0.0" prefHeight="25.0" prefWidth="446.0" promptText="Enter Text or File Path to Obfuscate" />
-            <Button id="browseBtn" fx:id="browseBtn" layoutX="456.0" layoutY="0.0" mnemonicParsing="false" onAction="#getFilePath" text="Browse" />
+            <RadioButton fx:id="obfuscateRadio" text="Obfuscate" />
+            <RadioButton fx:id="deobfuscateRadio" text="Deobfuscate" />
          </children>
-      </Pane>
+      </HBox>
 
-      <!-- String/File Toggle -->
-      <CheckBox id="stringCB" layoutX="74.0" layoutY="115.0" mnemonicParsing="false" onAction="#toggleInputType" text="Input is String (Uncheck for File)">
-         <font>
-            <Font size="13.0" />
-         </font>
-      </CheckBox>
+      <!-- Key Input -->
+      <PasswordField id="keyTB" fx:id="keyTB" layoutX="230.0" layoutY="98.0" prefHeight="26.0" prefWidth="250.0" promptText="Enter Obfuscation/Deobfuscation Key" />
+      <Button id="generateKeyBtn" layoutX="490.0" layoutY="98.0" mnemonicParsing="false" onAction="#generateKey" text="Generate Key" />
 
-      <!-- Obfuscation Technique Selection -->
-      <Label layoutX="74.0" layoutY="150.0" text="Obfuscation Technique">
-         <font>
-            <Font size="13.0" />
-         </font>
-      </Label>
-      <ChoiceBox id="obfuscationTechniqueCombo" fx:id="obfuscationTechniqueCombo" layoutX="230.0" layoutY="146.0" prefWidth="250.0">
-         <items>
-            <FXCollections fx:factory="observableArrayList">
-               <String fx:value="Base64 Encoding" />
-               <String fx:value="Hexadecimal Encoding" />
-               <String fx:value="Reverse String" />
-               <String fx:value="Custom Algorithm" />
-            </FXCollections>
-         </items>
-      </ChoiceBox>
+      <!-- Algorithm Selection -->
+      <ChoiceBox id="algTypeCombo" fx:id="algTypeCombo" layoutX="230.0" layoutY="133.0" prefWidth="250.0" />
+
+      <!-- Input Type -->
+      <CheckBox fx:id="stringCB" layoutX="79.0" layoutY="172.0" mnemonicParsing="false" onAction="#toggleInputType" text="Input is String (Uncheck for File)" />
+
+      <!-- Carrier File Input -->
+      <TextField fx:id="carrierFileTB" layoutX="230.0" layoutY="213.0" prefHeight="25.0" prefWidth="300.0" promptText="Select Input File" />
+      <Button id="carrierBrowseBtn" fx:id="carrierBrowseBtn" layoutX="534.0" layoutY="213.0" mnemonicParsing="false" onAction="#getCarrierFilePath" text="Browse" />
+
+      <!-- Output File -->
+      <TextField fx:id="outputFileTB" layoutX="230.0" layoutY="250.0" prefHeight="25.0" prefWidth="300.0" promptText="Save Output File" />
+      <Button id="outputBrowseBtn" fx:id="outputBrowseBtn" layoutX="534.0" layoutY="250.0" mnemonicParsing="false" onAction="#getOutputFilePath" text="Browse" />
 
       <!-- Advanced Options ScrollPane -->
-      <ScrollPane id="advScrollPane" fx:id="scrollPanel" layoutX="74.0" layoutY="190.0" prefHeight="150.0" prefWidth="550.0">
+      <ScrollPane id="advScrollPane" fx:id="scrollPanel" layoutX="72.0" layoutY="296.0" prefHeight="70.0" prefWidth="507.0">
          <content>
-            <VBox fx:id="scrollContentBox" prefHeight="300.0" prefWidth="530.0">
+            <VBox fx:id="scrollContentBox" prefHeight="232.0" prefWidth="530.0">
                <children>
-                  <Label text="Advanced Options Placeholder" />
+                  <Label text="Enable Advanced Obfuscation Settings" />
+                  <CheckBox text="Rename Variables" />
+                  <CheckBox text="Remove Comments" />
+                  <CheckBox text="Minify Code" />
                </children>
             </VBox>
          </content>
       </ScrollPane>
-      <Label layoutX="74.0" layoutY="170.0" text="Advanced Options">
-         <font>
-            <Font size="13.0" />
-         </font>
-      </Label>
+
+      <!-- Dark Mode Toggle -->
+      <RadioButton fx:id="darkRB" layoutX="494.0" layoutY="18.0" mnemonicParsing="false" text="Dark Mode" />
+
+      <!-- Labels -->
+      <Label layoutX="247.0" layoutY="18.0" text="Obfuscation Tool" />
+      <Label layoutX="78.0" layoutY="58.0" text="Operation Type" />
+      <Label layoutX="69.0" layoutY="275.0" prefHeight="17.0" prefWidth="111.0" text="Advanced Options" />
+      <Label layoutX="72.0" layoutY="254.0" text="Output File" />
+      <Label layoutX="79.0" layoutY="102.0" text="Key" />
+      <Label layoutX="75.0" layoutY="137.0" text="Algorithm" />
+      <Label layoutX="73.0" layoutY="217.0" text="Input File" />
 
       <!-- Execute Button -->
-      <Button id="executeBtn" layoutX="274.0" layoutY="350.0" mnemonicParsing="false" onAction="#executeObfuscation" text="Execute" />
-
-      <!-- Dark Mode RadioButton -->
-      <CheckBox layoutX="550.0" layoutY="18.0" mnemonicParsing="false" onAction="#changeMode" text="Dark Mode">
-         <font>
-            <Font size="13.0" />
-         </font>
-      </CheckBox>
+      <Button id="executeBtn" layoutX="268.0" layoutY="374.0" mnemonicParsing="false" onAction="#executeOperation" text="Execute" />
    </children>
 </AnchorPane>
