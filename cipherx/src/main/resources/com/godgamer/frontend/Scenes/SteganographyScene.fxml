@@ -1,12 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.godgamer.frontend.SteganographySceneController">
-   <children>
-      <Label layoutX="132.0" layoutY="130.0" prefHeight="18.0" prefWidth="302.0" text="Steganography" />
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.godgamer.frontend.SteganographySceneController"> <children>
+
       <Button id="backBtn" layoutX="25.0" layoutY="14.0" mnemonicParsing="false" onAction="#backToMain" text="Back" />
+
+      <RadioButton fx:id="darkRB" layoutX="490.0" layoutY="18.0" mnemonicParsing="false" text="Dark Mode" />
+
+      <Label layoutX="78.0" layoutY="58.0" text="Operation Type" />
+      <HBox layoutX="230.0" layoutY="58.0" spacing="10.0">
+         <children>
+            <RadioButton fx:id="encodeRadio" text="Encode (Hide)" />
+            <RadioButton fx:id="decodeRadio" text="Decode (Extract)" />
+         </children>
+      </HBox>
+
+      <Label layoutX="79.0" layoutY="92.0" text="Encryption Key" /> <PasswordField id="stegoKeyTB" fx:id="keyTB" layoutX="230.0" layoutY="88.0" prefHeight="26.0" prefWidth="250.0" promptText="Enter Optional Encryption Key" /> <Button id="generateKeyBtn" layoutX="490.0" layoutY="88.0" mnemonicParsing="false" onAction="#generateKey" prefHeight="26.0" text="Generate Key" /> <Label layoutX="75.0" layoutY="127.0" text="Algorithm" /> <ChoiceBox id="stegoAlgCombo" fx:id="algTypeCombo" layoutX="230.0" layoutY="123.0" prefHeight="26.0" prefWidth="250.0" /> <Label layoutX="73.0" layoutY="162.0" text="Carrier/Stego File" /> <TextField fx:id="carrierFileTB" layoutX="230.0" layoutY="158.0" prefHeight="26.0" prefWidth="300.0" promptText="Select Carrier / Stego-File" /> <Button id="carrierBrowseBtn" fx:id="carrierBrowseBtn" layoutX="534.0" layoutY="158.0" mnemonicParsing="false" onAction="#getCarrierFilePath" prefHeight="26.0" text="Browse" /> <Label layoutX="73.0" layoutY="197.0" text="Message Source" /> <CheckBox fx:id="stringCB" layoutX="230.0" layoutY="197.0" mnemonicParsing="false" onAction="#toggleMessageType" text="Message is Text Below (Uncheck for File)" /> <Label fx:id="messageFileLabel" layoutX="73.0" layoutY="227.0" text="Message File" visible="false" /> <TextArea fx:id="messageFileTB" layoutX="230.0" layoutY="223.0" prefHeight="26.0" prefWidth="300.0" promptText="Select Message File to Hide" visible="false" /> <Button id="messageBrowseBtn" fx:id="messageBrowseBtn" layoutX="534.0" layoutY="223.0" mnemonicParsing="false" onAction="#getMessageFilePath" prefHeight="26.0" text="Browse" visible="false" /> <Label fx:id="messageTextLabel" layoutX="73.0" layoutY="227.0" text="Message Text" /> <TextArea fx:id="messageFileTB" layoutX="151.0" layoutY="224.0" prefHeight="50.0" prefWidth="360.0" promptText="Enter text message to hide here..." wrapText="true" /> <Label layoutX="73.0" layoutY="285.0" text="Output File/Dir" /> <TextField fx:id="outputFileTB" layoutX="230.0" layoutY="281.0" prefHeight="26.0" prefWidth="300.0" promptText="Save Output Stego-File / Extracted Message To..." /> <Button id="outputBrowseBtn" fx:id="outputBrowseBtn" layoutX="534.0" layoutY="281.0" mnemonicParsing="false" onAction="#getOutputFilePath" prefHeight="26.0" text="Browse" /> <Button id="executeStegoBtn" defaultButton="true" layoutX="265.0" layoutY="367.0" mnemonicParsing="false" onAction="#executeStegoOperation" prefHeight="26.0" prefWidth="71.0" text="Execute" /> <Label layoutX="73.0" layoutY="307.0" text="Advanced Options" /> <ScrollPane id="advScrollPane" fx:id="scrollPanel" layoutX="72.0" layoutY="324.0" prefHeight="30.0" prefWidth="517.0"> <content>
+            <VBox fx:id="scrollContentBox" prefWidth="500.0" spacing="2.0"> <children>
+                  <Label text="Enable Advanced Steganography Settings" />
+                  <CheckBox text="Encrypt message before hiding" />
+                  </children>
+            </VBox>
+         </content>
+      </ScrollPane>
+      <Label layoutX="238.0" layoutY="18.0" prefHeight="17.0" prefWidth="142.0" text="Steganography Tool">
+         <font>
+            <Font size="14.0" />
+         </font></Label>
+      <Button id="carrierBrowseBtn" fx:id="messageBrowseBtn" layoutX="522.0" layoutY="231.0" mnemonicParsing="false" onAction="#getCarrierFilePath" prefHeight="26.0" text="Browse" />
+
    </children>
 </AnchorPane>
