@@ -1,5 +1,6 @@
 package com.godgamer.backend.Encryption;
 
+import java.util.Base64;
 public class Test {
 
     public static void main(String[] args) {
@@ -9,15 +10,17 @@ public class Test {
             AES aes = new AES();
 
             String message = "This is a top secret message!";
+            byte[] enc = aes.encrypt_CBC(message.getBytes(), "SarjaPur@Satya");
+            String encrypted = Base64.getEncoder().encodeToString(enc);
 
-            String encrypted = aes.encrypt_CTR(message, "temp"); // or encrypt_GCM, encrypt_CBC, etc.
             System.out.println("Encrypted: " + encrypted);
 
             String filename = aes.get_active_encrypted_filename(); // You must implement this method
 
             AES aesDecryptor = new AES();
 
-            String decrypted = aesDecryptor.decrypt_CTR(encrypted, filename, "temp"); // load key manually before this if needed
+            byte[] dec = aesDecryptor.decrypt_CBC(Base64.getDecoder().decode(encrypted), filename, "SarjaPur@Satya"); // load key manually before this if needed
+            String decrypted = new String(dec);
             System.out.println("Decrypted: " + decrypted);
 
         } catch (Exception e) {
