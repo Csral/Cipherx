@@ -17,7 +17,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -806,7 +805,7 @@ public class ChaCha20 {
 
     }
 
-    public String encrypt(String plaintext) throws Exception {
+    public byte[] encrypt(byte[] plaintext) throws Exception {
 
         this.MODIFY_KEY();
         this.MODIFY_IVSPACE();
@@ -816,14 +815,14 @@ public class ChaCha20 {
 
         Cipher cipher = Cipher.getInstance("ChaCha20");
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, c20spec);
-        byte[] encryptedBytes = cipher.doFinal(plaintext.getBytes());
+        byte[] encryptedBytes = cipher.doFinal(plaintext);
 
         this.active_encrypter_filename = this.KEY_SAVE();
 
-        return Base64.getEncoder().encodeToString(encryptedBytes);
+        return encryptedBytes;
     }
 
-    public String encrypt(String plaintext, String passwd) throws Exception {
+    public byte[] encrypt(byte[] plaintext, String passwd) throws Exception {
 
         this.MODIFY_KEY();
         this.MODIFY_IVSPACE();
@@ -833,14 +832,14 @@ public class ChaCha20 {
 
         Cipher cipher = Cipher.getInstance("ChaCha20");
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, c20spec);
-        byte[] encryptedBytes = cipher.doFinal(plaintext.getBytes());
+        byte[] encryptedBytes = cipher.doFinal(plaintext);
 
         this.active_encrypter_filename = this.KEY_SAVE(true, passwd);
 
-        return Base64.getEncoder().encodeToString(encryptedBytes);
+        return encryptedBytes;
     }
 
-    public String encrypt(String plaintext, String passwd, int degree_of_security, boolean off_limit) throws Exception {
+    public byte[] encrypt(byte[] plaintext, String passwd, int degree_of_security, boolean off_limit) throws Exception {
 
         this.MODIFY_KEY();
         this.MODIFY_IVSPACE();
@@ -850,14 +849,14 @@ public class ChaCha20 {
 
         Cipher cipher = Cipher.getInstance("ChaCha20");
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, c20spec);
-        byte[] encryptedBytes = cipher.doFinal(plaintext.getBytes());
+        byte[] encryptedBytes = cipher.doFinal(plaintext);
 
         this.active_encrypter_filename = this.KEY_SAVE_SECURE(true, passwd, degree_of_security, off_limit);
 
-        return Base64.getEncoder().encodeToString(encryptedBytes);
+        return encryptedBytes;
     }
 
-    public String decrypt(String encryptedText, String filename) throws Exception {
+    public byte[] decrypt(byte[] encryptedText, String filename) throws Exception {
 
         this.KEY_LOAD(filename);
 
@@ -867,11 +866,11 @@ public class ChaCha20 {
         Cipher cipher = Cipher.getInstance("ChaCha20");
         cipher.init(Cipher.DECRYPT_MODE, secretKey, c20spec);
 
-        byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(encryptedText));
-        return new String(decryptedBytes);
+        byte[] decryptedBytes = cipher.doFinal(encryptedText);
+        return decryptedBytes;
     }
 
-    public String decrypt(String encryptedText, String filename, String passwd) throws Exception {
+    public byte[] decrypt(byte[] encryptedText, String filename, String passwd) throws Exception {
 
         this.KEY_LOAD(filename, true, passwd);
 
@@ -881,72 +880,72 @@ public class ChaCha20 {
         Cipher cipher = Cipher.getInstance("ChaCha20");
         cipher.init(Cipher.DECRYPT_MODE, secretKey, c20spec);
 
-        byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(encryptedText));
-        return new String(decryptedBytes);
+        byte[] decryptedBytes = cipher.doFinal(encryptedText);
+        return decryptedBytes;
     }
 
-    public String encrypt_poly1305(String plaintext) throws Exception {
+    public byte[] encrypt_poly1305(byte[] plaintext) throws Exception {
 
         this.MODIFY_KEY();
         this.MODIFY_IVSPACE();
 
         Cipher cipher = Cipher.getInstance("ChaCha20-Poly1305");
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
-        byte[] encryptedBytes = cipher.doFinal(plaintext.getBytes());
+        byte[] encryptedBytes = cipher.doFinal(plaintext);
 
         this.active_encrypter_filename = this.KEY_SAVE();
 
-        return Base64.getEncoder().encodeToString(encryptedBytes);
+        return encryptedBytes;
     }
 
-    public String encrypt_poly1305(String plaintext, String passwd) throws Exception {
+    public byte[] encrypt_poly1305(byte[] plaintext, String passwd) throws Exception {
 
         this.MODIFY_KEY();
         this.MODIFY_IVSPACE();
 
         Cipher cipher = Cipher.getInstance("ChaCha20-Poly1305");
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
-        byte[] encryptedBytes = cipher.doFinal(plaintext.getBytes());
+        byte[] encryptedBytes = cipher.doFinal(plaintext);
 
         this.active_encrypter_filename = this.KEY_SAVE(true, passwd);
 
-        return Base64.getEncoder().encodeToString(encryptedBytes);
+        return encryptedBytes;
     }
 
-    public String encrypt_poly1305(String plaintext, String passwd, int degree_of_security, boolean off_limit) throws Exception {
+    public byte[] encrypt_poly1305(byte[] plaintext, String passwd, int degree_of_security, boolean off_limit) throws Exception {
 
         this.MODIFY_KEY();
         this.MODIFY_IVSPACE();
 
         Cipher cipher = Cipher.getInstance("ChaCha20-Poly1305");
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
-        byte[] encryptedBytes = cipher.doFinal(plaintext.getBytes());
+        byte[] encryptedBytes = cipher.doFinal(plaintext);
 
         this.active_encrypter_filename = this.KEY_SAVE_SECURE(true, passwd, degree_of_security, off_limit);
 
-        return Base64.getEncoder().encodeToString(encryptedBytes);
+        return encryptedBytes;
     }
 
-    public String decrypt_poly1305(String encryptedText, String filename) throws Exception {
+    public byte[] decrypt_poly1305(byte[] encryptedText, String filename) throws Exception {
 
         this.KEY_LOAD(filename);
 
         Cipher cipher = Cipher.getInstance("ChaCha20-Poly1305");
         cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec);
 
-        byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(encryptedText));
-        return new String(decryptedBytes);
+        byte[] decryptedBytes = cipher.doFinal(encryptedText);
+        return decryptedBytes;
     }
 
-    public String decrypt_poly1305(String encryptedText, String filename, String passwd) throws Exception {
+    public byte[] decrypt_poly1305(byte[] encryptedText, String filename, String passwd) throws Exception {
 
         this.KEY_LOAD(filename, true, passwd);
 
         Cipher cipher = Cipher.getInstance("ChaCha20-Poly1305");
         cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec);
 
-        byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(encryptedText));
-        return new String(decryptedBytes);
+        byte[] decryptedBytes = cipher.doFinal(encryptedText);
+        return decryptedBytes;
     }
 
 }
