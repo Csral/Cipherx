@@ -21,24 +21,24 @@
             <Font size="13.0" />
          </font></Label>
       <Button id="backBtn" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#backToMain" text="Back" />
-      <CheckBox id="verifiedCB" fx:id="verifiedAlgCB" layoutX="74.0" layoutY="100.0" mnemonicParsing="false" onAction="#changeAlgorithmList" text="Only Verified Algorithm">
+      <CheckBox id="verifiedCB" fx:id="verifiedAlgCB" layoutX="74.0" layoutY="139.0" mnemonicParsing="false" onAction="#changeAlgorithmList" text="Only Verified Algorithm">
          <font>
             <Font size="13.0" />
          </font></CheckBox>
-      <PasswordField id="passwordTB" fx:id="passwordTB" layoutX="179.0" layoutY="128.0" prefHeight="26.0" prefWidth="150.0" promptText="Encryption Password" />
-      <TextField id="passwordShowTB" fx:id="passwordShowTB" layoutX="179.0" layoutY="128.0" prefHeight="26.0" prefWidth="150.0" />
-      <Label layoutX="74.0" layoutY="132.0" text="Password">
+      <PasswordField id="passwordTB" fx:id="passwordTB" layoutX="179.0" layoutY="167.0" prefHeight="26.0" prefWidth="150.0" promptText="Encryption Password" />
+      <TextField id="passwordShowTB" fx:id="passwordShowTB" layoutX="179.0" layoutY="167.0" prefHeight="26.0" prefWidth="150.0" />
+      <Label layoutX="74.0" layoutY="171.0" text="Password">
          <font>
             <Font size="13.0" />
          </font></Label>
-      <ChoiceBox id="algTypeCombo" fx:id="algTypeCombo" layoutX="179.0" layoutY="163.0" prefWidth="150.0" />
-      <Label layoutX="73.0" layoutY="167.0" text="Algorithm Type">
+      <ChoiceBox id="algTypeCombo" fx:id="algTypeCombo" layoutX="179.0" layoutY="202.0" prefWidth="150.0" />
+      <Label layoutX="73.0" layoutY="206.0" text="Algorithm Type">
          <font>
             <Font size="13.0" />
          </font></Label>
       <Pane id="InputPane" layoutX="-3.0" layoutY="55.0" prefHeight="42.0" prefWidth="606.0">
          <children>
-            <TextField fx:id="inputTB" layoutX="76.0" layoutY="9.0" prefHeight="25.0" prefWidth="446.0" />
+            <TextField fx:id="inputTB" layoutX="76.0" layoutY="9.0" prefHeight="25.0" prefWidth="446.0" promptText="Browse for file input..." />
             <Button id="browseBtn" fx:id="browseBtn" layoutX="533.0" layoutY="9.0" mnemonicParsing="false" onAction="#getFilePath" text="Browse" />
          </children>
       </Pane>
@@ -46,24 +46,30 @@
          <font>
             <Font size="13.0" />
          </font></CheckBox>
-      <ScrollPane id="advScrollPane" fx:id="scrollPanel" layoutX="70.0" layoutY="224.0" prefHeight="121.0" prefWidth="514.0">
+      <ScrollPane id="advScrollPane" fx:id="scrollPanel" layoutX="70.0" layoutY="262.0" prefHeight="84.0" prefWidth="514.0">
          <content>
             <VBox fx:id="scrollContentBox" prefHeight="335.0" prefWidth="499.0" />
          </content>
       </ScrollPane>
-      <Label layoutX="73.0" layoutY="202.0" text="Advanced Options">
+      <Label layoutX="73.0" layoutY="241.0" text="Advanced Options">
          <font>
             <Font size="13.0" />
          </font></Label>
-      <Button id="showBtn" fx:id="showBtn" layoutX="340.0" layoutY="126.0" mnemonicParsing="false" onAction="#togglePasswordVisibility">
+      <Button id="showBtn" fx:id="showBtn" layoutX="340.0" layoutY="165.0" mnemonicParsing="false" onAction="#togglePasswordVisibility">
          <graphic>
             <ImageView id="showBtnImage" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" />
          </graphic></Button>
-      <Button id="executeBtn" layoutX="274.0" layoutY="357.0" mnemonicParsing="false" text="Execute" />
+      <Button id="executeBtn" layoutX="274.0" layoutY="357.0" mnemonicParsing="false" onAction="#execute" text="Execute" />
       <RadioButton id="darkRB" fx:id="darkRB" layoutX="488.0" layoutY="18.0" mnemonicParsing="false" onAction="#changeMode" text="Dark Mode">
          <font>
             <Font size="13.0" />
          </font>
       </RadioButton>
+      <Pane id="InputPane" layoutX="-3.0" layoutY="89.0" prefHeight="42.0" prefWidth="606.0">
+         <children>
+            <TextField fx:id="outputTB" layoutX="76.0" layoutY="9.0" prefHeight="25.0" prefWidth="446.0" promptText="FIle location to store Encrypted file" />
+            <Button id="browseBtn" fx:id="browseBtn2" layoutX="533.0" layoutY="9.0" mnemonicParsing="false" onAction="#getOutputFilePath" text="Browse" />
+         </children>
+      </Pane>
    </children>
 </AnchorPane>

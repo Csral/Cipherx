@@ -1,8 +1,12 @@
 package com.godgamer.frontend;
 
 import java.io.IOException;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.godgamer.backend.Encryption.AES;
+import com.godgamer.backend.Encryption.ChaCha20;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -17,8 +21,12 @@ import javafx.stage.Stage;
 public class App extends Application {
 
     public static Scene scene;
+    public static Stage stage;
+    public static LocalTime loginTime = LocalTime.now();
     private static String css;
     public static boolean isDarkMode = false;
+    public static AES aes; // for encryption and decryption
+    public static ChaCha20 chacha20; // for encryption and decryption
 
     // Images
     public static Map<String, Image> images = new HashMap<>();
@@ -45,6 +53,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+        this.stage = stage; // set the stage to the current stage
         // the main scene
         Parent root = loadFXML("MainScene");
         scene = new Scene(root);
@@ -61,7 +70,23 @@ public class App extends Application {
         stage.setMinWidth(600);
         stage.setMinHeight(400);
         stage.setScene(scene);
+
+        // setting up the stage close request
+        // this is where the app closes and performs actions while closing the app
+        stage.setOnCloseRequest(e -> {
+            onAppClosing(); // perform actions while closing the app
+        });
+
+        // display the stage
         stage.show();
+    }
+
+    // perform actions while closing the app
+    private void onAppClosing()
+    {
+        // save logs to file
+        Logger.printMessage("Application is closing.");
+        Logger.saveLogs();
     }
 
     // changes the css file of the scene
@@ -82,9 +107,9 @@ public class App extends Application {
             Parent root = loadFXML(fxml);
             scene.setRoot(root);
             changeCSS(isDarkMode ? darkCSS : lightCSS);
-            System.out.println("Successfully switched to: " + fxml);
+            Logger.printMessage("Successfully switched to: " + fxml);
         } catch (IOException e) {
-            System.err.println("Failed to load FXML: " + fxml);
+            Logger.printMessage("Failed to load FXML: " + fxml);
             e.printStackTrace();
         }
     }    
@@ -105,7 +130,17 @@ public class App extends Application {
         images.put("cryptography", getImage("Cryptography", App.IMAGE_EXTENSIONS.png.toString(), 88d, 58d, true));
         images.put("steganography", getImage("Steganography", App.IMAGE_EXTENSIONS.png.toString(), 88d, 58d, true));
         images.put("logo", getImage("logo3", App.IMAGE_EXTENSIONS.jpg.toString(), 200d, 150d, true));
-        launch();
+
+        // load AES class
+        try { 
+            aes = new AES();
+            chacha20 = new ChaCha20();
+        } catch (Exception e) {
+            Logger.printMessage("Failed to load AES class: " + e.getMessage());
+        }
+
+        // load the app
+        launch(args);
     }
 
 }

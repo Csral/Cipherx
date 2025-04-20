@@ -1,0 +1,7 @@
+19:09:48.888642100; Message;;Selected file: C:\Users\rtama\Desktop\hi.dat
+19:09:58.404562600; Message;;File to open: D:\Amrita\OOP_sem 2\OOPs-Project\key_1745155765559_2152.obj.key
+19:10:06.369492100; Message;;File to save: C:\Users\rtama\Desktop\hi.txt
+19:10:08.386293800; Message;;Input file read successfully!
+19:10:08.386293800; Message;;Decrypting Started..
+19:10:09.508586400; Info;File saved;File saved succesfully!
+19:10:22.143043300; Message;;Application is closing.

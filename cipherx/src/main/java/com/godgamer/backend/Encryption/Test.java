@@ -9,13 +9,15 @@ public class Test {
 
             AES aes = new AES();
 
-            String message = "This is a top secret message!";
+            // String message = "This is a top secret message!";
+            String message = ".wm.asds";
             byte[] enc = aes.encrypt_CBC(message.getBytes(), "SarjaPur@Satya");
             String encrypted = Base64.getEncoder().encodeToString(enc);
 
             System.out.println("Encrypted: " + encrypted);
 
             String filename = aes.get_active_encrypted_filename(); // You must implement this method
+            System.out.println("Filename: " + filename);
 
             AES aesDecryptor = new AES();
 

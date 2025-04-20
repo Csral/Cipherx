@@ -2,6 +2,11 @@ package com.godgamer.backend.Encryption;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -9,16 +14,10 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import com.godgamer.backend.Handler.HandlerWrite;
 import com.godgamer.backend.Handler.Block;
 import com.godgamer.backend.Handler.Encrypter;
 import com.godgamer.backend.Handler.HandlerRead;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
+import com.godgamer.backend.Handler.HandlerWrite;
 
 public class AES {
 
@@ -88,7 +87,7 @@ public class AES {
     private Encrypter extra_Encrypter;
     private String active_encrypter_filename;
 
-    AES() throws Exception {
+    public AES() throws Exception {
         keyGen = KeyGenerator.getInstance("AES");
         keyGen.init(256);
         extra_Encrypter = new Encrypter();

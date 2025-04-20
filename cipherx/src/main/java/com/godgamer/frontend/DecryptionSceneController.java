@@ -1,38 +1,41 @@
 package com.godgamer.frontend;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.function.UnaryOperator;
 
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class DecryptionSceneController implements Initializable {
-
-    // @FXML
-    // private RadioButton darkRB;
-    // // accept ActionEvent e as parameter to get the source of the event such as stage, scene, etc.
-    // public void backToMain() throws Exception {
-    //     App.setRoot("MainScene", "MainSceneDark", "MainSceneLight");
-    // }
-    // // changes dark or light mode
-    // public void changeMode()
-    // {
-    //     App.isDarkMode = !App.isDarkMode;
-    //     darkRB.setSelected(App.isDarkMode);
-    //     App.changeCSS((App.isDarkMode) ? "MainSceneDark" : "MainSceneLight");     
-    // }
 
     @FXML
     private RadioButton darkRB;
@@ -42,19 +45,89 @@ public class DecryptionSceneController implements Initializable {
     private VBox scrollContentBox;
     @FXML
     private ChoiceBox<String> algTypeCombo;
-    // @FXML
-    // private CheckBox verifiedAlgCB;
     @FXML
-    private TextField inputTB, passwordShowTB;
+    private TextField inputTB, passwordShowTB, outputTB, keyFileTB;
     @FXML
     private PasswordField passwordTB;
     @FXML
     private Button browseBtn, showBtn;
 
-    // private final Image sPass = App.getImage("show pass", App.IMAGE_EXTENSIONS.png.toString(),20d,20d, true), 
-            // hPass = App.getImage("hide pass", App.IMAGE_EXTENSIONS.png.toString(),20d, 20d, true);
+    private class Algorithms 
+    {
+        public String algName;
+        public Map<String, Node> algOptions = new HashMap<>(); // this will be used to store the advanced options for the algorithm
+        public Algorithms(String algName) {
+            this.algName = algName;
+        }
+        public Algorithms addOptions(HashMap<String, Node> nodes) {
+            algOptions.putAll(nodes);
+            return this;
+        }
+    }
 
-    // private final String[] verifiedAlgType = {"Caesar Cipher", "Vigenere Cipher"}, unverifiedAlgType  = {"Shift Value"};
+     // filter to allow only integer values in the text field
+    UnaryOperator<TextFormatter.Change> integerFilter = change -> {
+        String newText = change.getControlNewText();
+        if (newText.matches("-?\\d*")) { // allows optional negative sign and digits
+            return change;
+        }
+        return null;
+    };
+
+    private final Algorithms[] verifiedAlgType = {
+        new Algorithms("CBC").addOptions(new HashMap<String, Node>() {
+            {
+                // TextField dos = new TextField("0");
+                // dos.setTextFormatter(new TextFormatter<>(integerFilter));
+                // put("Degree of Security", dos);
+                // put("Off Limits", new CheckBox());
+            }
+        }),
+        new Algorithms("ECB").addOptions(new HashMap<String, Node>() {
+            // {
+            //     put("Label", new Label("ECB"));
+            //     put("Shift Value", new TextField("0"));
+            // }
+        }),
+        new Algorithms("CFB").addOptions(new HashMap<String, Node>() {
+            // {
+            //     put("Label", new Label("CFB"));
+            //     put("Shift Value", new TextField("0"));
+            // }
+        }),
+        new Algorithms("OFB").addOptions(new HashMap<String, Node>() {
+            // {
+            //     put("Label", new Label("OFB"));
+            //     put("Shift Value", new TextField("0"));
+            // }
+        }),
+        new Algorithms("CTR").addOptions(new HashMap<String, Node>() {
+            // {
+            //     put("Label", new Label("CTR"));
+            //     put("Shift Value", new TextField("0"));
+            // }
+        }),
+        new Algorithms("GCM").addOptions(new HashMap<String, Node>() {
+            // {
+            //     put("Label", new Label("GCM"));
+            //     put("Shift Value", new TextField("0"));
+            // }
+        }),
+        new Algorithms("ChaCha20").addOptions(new HashMap<String, Node>() {
+            // {
+            //     put("Label", new Label("ChaCha20"));
+            //     put("Shift Value", new TextField("0"));
+            // }
+        }),
+        new Algorithms("Poly1035").addOptions(new HashMap<String, Node>() {
+            // {
+            //     put("Label", new Label("Poly1035"));
+            //     put("Shift Value", new TextField("0"));
+            // }
+        }),
+    }, unverifiedAlgType = {};
+
+    private static Algorithms curAlg = null; // this will be used to store the current algorithm selected
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
@@ -62,10 +135,14 @@ public class DecryptionSceneController implements Initializable {
         darkRB.setSelected(App.isDarkMode);
 
         // setting up algorithm type combo box
-        algTypeCombo.getItems().addAll(EncryptionSceneController.verifiedAlgType);
-        algTypeCombo.getItems().addAll(EncryptionSceneController.unverifiedAlgType);
-        algTypeCombo.setValue(EncryptionSceneController.verifiedAlgType[0]);
-        // setting up advanced options
+        for (Algorithms alg : verifiedAlgType) {
+            algTypeCombo.getItems().add(alg.algName);
+        }
+        for (Algorithms alg : unverifiedAlgType) {
+            algTypeCombo.getItems().add(alg.algName);
+        }
+        algTypeCombo.setValue(verifiedAlgType[0].algName);
+
         algTypeCombo.setOnAction(this::updateAdvancedOptions);
         updateAdvancedOptions(null);
         scrollPanel.setContent(scrollContentBox);
@@ -73,20 +150,16 @@ public class DecryptionSceneController implements Initializable {
         scrollPanel.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         scrollPanel.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 
-        // setting up password fields
         passwordShowTB.setVisible(false); // Initially hidden
-        // Make sure both fields have the same text
         passwordShowTB.textProperty().bindBidirectional(passwordTB.textProperty());
         ImageView showBtnImg = (ImageView)showBtn.getGraphic();
         showBtnImg.setImage(App.images.get("show pass")); // Set the image to show password icon
     }
 
-    // accept ActionEvent e as parameter to get the source of the event such as stage, scene, etc.
     public void backToMain() throws Exception {
         App.setRoot("MainScene", "MainSceneDark", "MainSceneLight");
     }
 
-    // changes dark or light mode
     public void changeMode()
     {
         App.isDarkMode = !App.isDarkMode;
@@ -94,23 +167,55 @@ public class DecryptionSceneController implements Initializable {
         App.changeCSS(((App.isDarkMode) ? "EncDecDark" : "EncDecLight"));     
     }
 
+    // To get the required element from the advanced options
+    private  Node getOptionValue(Algorithms alg, String optionKey) {
+        if (alg != null && alg.algOptions.containsKey(optionKey)) {
+            return alg.algOptions.get(optionKey);
+        }
+
+        return null;
+    }
+
     private void updateAdvancedOptions(ActionEvent event)
     {
         String myChoice = algTypeCombo.getValue();
         scrollContentBox.getChildren().clear();
-        if (myChoice != null)
-            switch(myChoice)
-            {
-                case "Caesar Cipher":
-                    scrollContentBox.getChildren().addAll(new Label("Caesar Cipher"), new Button("click me"));
-                    break;
-                case "Vigenere Cipher":
-                    scrollContentBox.getChildren().addAll(new Label("Vignere Cipher"), new Button("click me"));
-                    break;
-                default:
-                    break;
+
+        Algorithms selectedAlg = null;
+
+        for (Algorithms alg : verifiedAlgType) {
+            if (alg.algName.equals(myChoice)) {
+                selectedAlg = alg;
+                break;
             }
-        if(event != null)
+        }
+        if (selectedAlg == null) {
+            for (Algorithms alg : unverifiedAlgType) {
+                if (alg.algName.equals(myChoice)) {
+                    selectedAlg = alg;
+                    break;
+                }
+            }
+        }
+
+        if (selectedAlg != null) {
+            curAlg = selectedAlg; // Store the current algorithm
+            for (Map.Entry<String, Node> entry : selectedAlg.algOptions.entrySet()) {
+                String key = entry.getKey();
+                Node valueNode = entry.getValue();
+
+                // Create a row with key label and input node
+                HBox row = new HBox(10); // spacing between label and input
+                Label keyLabel = new Label(key);
+                row.getChildren().addAll(keyLabel, valueNode);
+                scrollContentBox.setSpacing(4); // adds vertical space between HBox rows
+                row.setAlignment(Pos.CENTER_LEFT); // aligns children to the left
+                keyLabel.setMinWidth(120); // set consistent width for labels
+                scrollContentBox.getChildren().add(row);
+            }
+        }
+
+        if (event != null)
             event.consume();
     }
 
@@ -127,30 +232,245 @@ public class DecryptionSceneController implements Initializable {
 
     public void getFilePath()
     {
-        // Create a FileChooser instance
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select a File");
 
-        // Set filters (Optional: restrict file types)
         fileChooser.getExtensionFilters().add(
-            new FileChooser.ExtensionFilter("Text Files", "*.txt")
+            new FileChooser.ExtensionFilter("Binary File", "*.dat")
         );
 
-        // Open file dialog and get the selected file
         File selectedFile = fileChooser.showOpenDialog(App.scene.getWindow());
 
-        // Check if a file was selected and print the path
         if (selectedFile != null) {
-            System.out.println("Selected file: " + selectedFile.getAbsolutePath());
+            Logger.printMessage("Selected file: " + selectedFile.getAbsolutePath());
             inputTB.setText(selectedFile.getAbsolutePath());
         } else {
-            System.out.println("No file selected.");
+            Logger.printMessage("No file selected.");
         }
     }
 
-    public void toggleBrowseBtn()
-    {
+    /**
+     * * This method is used to get the output file path from the user using a
+     * FileChooser dialog. * * It sets the selected file path to the outputTB
+     * TextField. * * If the user cancels the operation, it prints a message to
+     * the console.
+     */
+    public void getOutputFilePath() {
+        // Create a FileChooser instance
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save a file");
+
+        // Set filters (Optional: restrict file types)
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Text File", "*.txt")
+        );
+
+        // Show the save file dialog
+        File fileToSave = fileChooser.showSaveDialog(App.scene.getWindow());
+
+        if (fileToSave != null) {
+            Logger.printMessage("File to save: " + fileToSave.getAbsolutePath());
+            outputTB.setText(fileToSave.getAbsolutePath());
+        } else {
+            Logger.printMessage("Save operation cancelled.");
+        }
+    }
+
+    /**
+     * * This method is used to get the key file path from the user using a
+     * FileChooser dialog. * * It sets the selected file path to the keyFileTB
+     * TextField. * * If the user cancels the operation, it prints a message to
+     * the console.
+     */
+    public void getKeyFilePath() {
+        // Create a FileChooser instance
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Key File");
+
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Key File", "*.key")
+        );
+
+        // Show the open file dialog
+        File fileToOpen = fileChooser.showOpenDialog(App.scene.getWindow());
+
+        if (fileToOpen != null) {
+            Logger.printMessage("File to open: " + fileToOpen.getAbsolutePath());
+            keyFileTB.setText(fileToOpen.getAbsolutePath());
+        } else {
+            Logger.printMessage("Open operation cancelled.");
+        }
+    }
+
+    // public void toggleBrowseBtn() {
+    //     inputTB.setText("");
+    //     browseBtn.setVisible(!browseBtn.isVisible());
+    //     if (browseBtn.isVisible()) {
+    //         inputTB.setPromptText("Browse for file input..."); 
+    //     }else {
+    //         inputTB.setPromptText("Enter the string to encrypt...");
+    //     }
+    // }
+
+    private void resetWindow() {
         inputTB.setText("");
-        browseBtn.setVisible(!browseBtn.isVisible());
+        passwordTB.setText("");
+        passwordShowTB.setText("");
+        keyFileTB.setText("");
+        outputTB.setText("");
+        algTypeCombo.setValue(verifiedAlgType[0].algName);
+        updateAdvancedOptions(null);
+    }
+
+    public void execute()
+    {
+        byte[] inputData;
+        String password = passwordTB.getText();
+
+        if(inputTB.getText().isEmpty())
+        {    
+            Logger.showWarning("Kindly browse for an input file or enter the message to be encrypted!", "Input File not specified", "Input is empty!");
+            return;
+        }
+        if(outputTB.getText().isEmpty())
+        {     
+            Logger.showWarning("Kindly specify the location of output file!", "Output File not specified", "Output is empty!");
+            return;
+        }
+        // if (browseBtn.isVisible())
+        // {
+        File inputFile = new File(inputTB.getText());
+        if (!inputFile.exists()) {
+            Logger.showWarning("Kindly browse for an existing input file", "Input file does not exist", "Input file does not exist!");
+            return;
+        }
+        if (!inputFile.canRead()) {
+            Logger.showWarning("Kindly browse for a readable input file", "Input file is not readable", "Input file is not readable!");
+            return;
+        }
+        // Read the file content into a byte array
+        try {
+            inputData = java.nio.file.Files.readAllBytes(inputFile.toPath());
+            if (inputData.length == 0) {
+                Logger.showWarning("Kindly browse for a non-empty input file", "Input file is empty", "Input file is empty!");
+                return;
+            }
+            Logger.printMessage("Input file read successfully!");
+        } catch (java.io.IOException e) {
+            Logger.showError("An error encountered while reading input file!", "Input File Error", "Error reading input file: " + e.getMessage());
+            return;
+        }
+        // }
+        // else
+        // {
+        //     String inputString = inputTB.getText();
+        //     if (inputString.isEmpty()) {
+        //         Logger.showWarning("Kindly enter a string to encrypt!", "Input String not specified", "Input string is empty!");
+        //         return;
+        //     }
+        //     inputData = inputString.getBytes(StandardCharsets.UTF_8); // Convert the string to bytes
+        // }
+
+        Logger.printMessage("Decrypting Started..");
+        // Create progress dialog
+        Stage progressDialog = new Stage();
+        progressDialog.initModality(Modality.APPLICATION_MODAL);
+        progressDialog.initOwner(App.scene.getWindow());
+        progressDialog.setTitle("Decryption in Progress");
+        progressDialog.setResizable(false);
+        progressDialog.setAlwaysOnTop(true);
+        VBox vbox = new VBox(10, new Label("Decrypting... Please wait."), new ProgressIndicator());
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setStyle("-fx-padding: 20;");
+        Scene scene = new Scene(vbox, 300, 100);
+        progressDialog.setScene(scene);
+
+        // Create encryption task
+        Task<byte[]> decryptionTask = new Task<>() {
+            @Override
+            protected byte[] call() throws Exception {
+                // Perform encryption here
+                String filename = new File(keyFileTB.getText()).getName();
+                switch (curAlg.algName) {
+                    case "CBC":
+                        if (password.isEmpty())
+                            return App.aes.decrypt_CBC(inputData, filename); // Ensure this method returns encrypted bytes
+                        else
+                            return App.aes.decrypt_CBC(inputData, filename, password);
+                        
+                    case "ECB": 
+                        if (password.isEmpty())
+                            return App.aes.decrypt_ECB(inputData, filename); // Ensure this method returns encrypted bytes
+                        else
+                            return App.aes.decrypt_ECB(inputData, filename, password);
+                    case "CFB":
+                        if (password.isEmpty())
+                            return App.aes.decrypt_CFB(inputData, filename); // Ensure this method returns encrypted bytes
+                        else
+                            return App.aes.decrypt_CFB(inputData, filename, password);
+                    case "OFB":
+                        if (password.isEmpty())
+                            return App.aes.decrypt_OFB(inputData, filename); // Ensure this method returns encrypted bytes
+                        else
+                            return App.aes.decrypt_OFB(inputData, filename, password);
+                    case "CTR":
+                        if (password.isEmpty())
+                            return App.aes.decrypt_CTR(inputData, filename); // Ensure this method returns encrypted bytes
+                        else
+                            return App.aes.decrypt_CTR(inputData, filename, password);
+                    case "GCM":
+                        if (password.isEmpty())
+                            return App.aes.decrypt_GCM(inputData, filename); // Ensure this method returns encrypted bytes
+                        else
+                            return App.aes.decrypt_GCM(inputData, filename, password);
+                    case "ChaCha20":
+                        if (password.isEmpty())
+                            return App.chacha20.decrypt(inputData, filename); // Ensure this method returns encrypted bytes
+                        else
+                            return App.chacha20.decrypt(inputData, filename, password);
+                    case "Poly1035":
+                        if (password.isEmpty())
+                            return App.chacha20.decrypt_poly1305(inputData, filename); // Ensure this method returns encrypted bytes
+                        else
+                            return App.chacha20.decrypt_poly1305(inputData, filename, password);
+                    default:
+                        throw new AssertionError("Unexpected algorithm: " + curAlg.algName);
+                }
+                // return null; // Placeholder (ensure all cases return)
+            }
+        };
+
+        // Handle task completion
+        decryptionTask.setOnSucceeded(workerStateEvent -> {
+            progressDialog.close();
+            byte[] encryptedData = decryptionTask.getValue();
+            if (encryptedData != null) {
+                try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(outputTB.getText()))) {
+                    bos.write(encryptedData);
+                    bos.flush();
+                    Logger.showInfo("File saved succesfully!", "File saved", "File saved successfully!");
+                    resetWindow();
+                } catch (IOException e) {
+                    Logger.showError("An error occurred while writing the output file!", "Output File Error", "Error: " + e.getMessage());
+                }
+            }
+            
+        });
+
+        decryptionTask.setOnFailed(workerStateEvent -> {
+            progressDialog.close();
+            Logger.showError("An error occurred during decryption!", "Decryption Error", "Error: " + decryptionTask.getException().getMessage());
+            
+        });
+
+        decryptionTask.setOnCancelled(workerStateEvent -> {
+            progressDialog.close();
+            Logger.showWarning("Decryption was cancelled!", "Decryption Cancelled", "Decryption was cancelled!");
+        });
+
+        // Show dialog and start task
+        progressDialog.show();
+        new Thread(decryptionTask).start();
+
     }
 }

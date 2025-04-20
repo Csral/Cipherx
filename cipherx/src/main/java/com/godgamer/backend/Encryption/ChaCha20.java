@@ -1,17 +1,5 @@
 package com.godgamer.backend.Encryption;
 
-import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.ChaCha20ParameterSpec;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-
-import com.godgamer.backend.Handler.HandlerWrite;
-import com.godgamer.backend.Handler.Block;
-import com.godgamer.backend.Handler.Encrypter;
-import com.godgamer.backend.Handler.HandlerRead;
-
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -19,6 +7,18 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.ChaCha20ParameterSpec;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+
+import com.godgamer.backend.Handler.Block;
+import com.godgamer.backend.Handler.Encrypter;
+import com.godgamer.backend.Handler.HandlerRead;
+import com.godgamer.backend.Handler.HandlerWrite;
 
 public class ChaCha20 {
 
