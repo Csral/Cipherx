@@ -1,0 +1,9 @@
+13:51:52.853802500; Warning;Output File not specified;Kindly specify the location of output file!
+13:52:17.067678200; Message;;File to save: C:\Users\mechi\Desktop\chaturyacummer.dat
+13:52:20.649376300; Info;Encryption Success;Key file stored in C:\Users\mechi\Desktop\Amrita\OOPS\OOPs-Projectnull
+Encrypted File Stored in C:\Users\mechi\Desktop\chaturyacummer.dat
+13:52:22.004361500; Message;;File saved successfully!
+13:52:48.779906800; Message;;File to save: C:\Users\mechi\Desktop\chaturyacummer.dat
+13:52:58.730779400; Error;Encryption Error;An error occurred during encryption!
+13:53:17.222896400; Error;Encryption Error;An error occurred during encryption!
+13:54:02.171488500; Message;;Application is closing.
