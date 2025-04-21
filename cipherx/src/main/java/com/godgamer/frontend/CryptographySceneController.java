@@ -30,7 +30,7 @@ public class CryptographySceneController implements Initializable {
 
     // TextFields for input, key, carrier file, and output file
     @FXML
-    private TextField keyTB, carrierFileTB;
+    private TextField carrierFileTB;
 
     // ChoiceBox for algorithm selection
     @FXML
