@@ -64,7 +64,7 @@ public class App extends Application {
         scene.getStylesheets().add(css);
 
         // setting up the stage prerequisites
-        Image icon = getImage("logo3", IMAGE_EXTENSIONS.jpg.toString(), false); // for app icon
+        Image icon = getImage("CypherX_Logo", IMAGE_EXTENSIONS.jpg.toString(), false); // for app icon
         stage.getIcons().add(icon);
         stage.setTitle("CipherX");
         stage.setMinWidth(600);
@@ -129,7 +129,8 @@ public class App extends Application {
         images.put("obfuscate", getImage("Obfuscation", App.IMAGE_EXTENSIONS.png.toString(), 88d, 58d, true));
         images.put("cryptography", getImage("Cryptography", App.IMAGE_EXTENSIONS.png.toString(), 88d, 58d, true));
         images.put("steganography", getImage("Steganography", App.IMAGE_EXTENSIONS.png.toString(), 88d, 58d, true));
-        images.put("logo", getImage("logo3", App.IMAGE_EXTENSIONS.jpg.toString(), 200d, 150d, true));
+        images.put("startScreenLight", getImage("CypherX_start_image_light", App.IMAGE_EXTENSIONS.jpg.toString(), 200d, 150d, true));
+        images.put("startScreenDark", getImage("CypherX_start_image", App.IMAGE_EXTENSIONS.jpg.toString(), 200d, 150d, true));
 
         // load AES class
         try { 

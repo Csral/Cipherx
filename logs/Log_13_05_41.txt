@@ -1,2 +1,0 @@
-13:06:10.234882500; Message;;Successfully switched to: MainScene
-13:21:33.156391700; Message;;Application is closing.

@@ -1,0 +1,1 @@
+21:57:14.589168700; Message;;Application is closing.
