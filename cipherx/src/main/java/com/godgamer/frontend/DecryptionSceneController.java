@@ -77,53 +77,43 @@ public class DecryptionSceneController implements Initializable {
     private final Algorithms[] verifiedAlgType = {
         new Algorithms("CBC").addOptions(new HashMap<String, Node>() {
             {
-                // TextField dos = new TextField("0");
-                // dos.setTextFormatter(new TextFormatter<>(integerFilter));
-                // put("Degree of Security", dos);
-                // put("Off Limits", new CheckBox());
+                put("No Advanced Options", new Label(""));
             }
         }),
         new Algorithms("ECB").addOptions(new HashMap<String, Node>() {
-            // {
-            //     put("Label", new Label("ECB"));
-            //     put("Shift Value", new TextField("0"));
-            // }
+            {
+                put("No Advanced Options", new Label(""));
+            }
         }),
         new Algorithms("CFB").addOptions(new HashMap<String, Node>() {
-            // {
-            //     put("Label", new Label("CFB"));
-            //     put("Shift Value", new TextField("0"));
-            // }
+            {
+                put("No Advanced Options", new Label(""));
+            }
         }),
         new Algorithms("OFB").addOptions(new HashMap<String, Node>() {
-            // {
-            //     put("Label", new Label("OFB"));
-            //     put("Shift Value", new TextField("0"));
-            // }
+            {
+                put("No Advanced Options", new Label(""));
+            }
         }),
         new Algorithms("CTR").addOptions(new HashMap<String, Node>() {
-            // {
-            //     put("Label", new Label("CTR"));
-            //     put("Shift Value", new TextField("0"));
-            // }
+            {
+                put("No Advanced Options", new Label(""));
+            }
         }),
         new Algorithms("GCM").addOptions(new HashMap<String, Node>() {
-            // {
-            //     put("Label", new Label("GCM"));
-            //     put("Shift Value", new TextField("0"));
-            // }
+            {
+                put("No Advanced Options", new Label(""));
+            }
         }),
         new Algorithms("ChaCha20").addOptions(new HashMap<String, Node>() {
-            // {
-            //     put("Label", new Label("ChaCha20"));
-            //     put("Shift Value", new TextField("0"));
-            // }
+            {
+                put("No Advanced Options", new Label(""));
+            }
         }),
         new Algorithms("Poly1305").addOptions(new HashMap<String, Node>() {
-            // {
-            //     put("Label", new Label("Poly1035"));
-            //     put("Shift Value", new TextField("0"));
-            // }
+            {
+                put("No Advanced Options", new Label(""));
+            }
         }),
     }, unverifiedAlgType = {};
 

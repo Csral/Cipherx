@@ -17,6 +17,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 
 public class ObfuscationSceneController implements Initializable {
@@ -26,10 +27,10 @@ public class ObfuscationSceneController implements Initializable {
     @FXML private ToggleGroup operationGroup;
 
     @FXML private ChoiceBox<String> algTypeCombo;
-    @FXML private TextField carrierFileTB;
+    @FXML private TextField carrierFileTB, keyShowTB;
     @FXML private Button carrierBrowseBtn;
     @FXML private PasswordField keyTB;
-    @FXML private Button executeBtn;
+    @FXML private Button executeBtn, showKeyBtn;
     @FXML private ScrollPane scrollPanel;
     @FXML private RadioButton darkRB;
 
@@ -51,6 +52,22 @@ public class ObfuscationSceneController implements Initializable {
         obfuscateRadio.setToggleGroup(group);
         deobfuscateRadio.setToggleGroup(group);
         obfuscateRadio.setSelected(true); // Default
+        keyShowTB.setVisible(false);
+        // Make sure both fields have the same text
+        keyShowTB.textProperty().bindBidirectional(keyTB.textProperty());
+        ImageView showBtnImg = (ImageView)showKeyBtn.getGraphic();
+        showBtnImg.setImage(App.images.get("show pass")); // Set the image to show password icon
+    }
+
+    public void showKey()
+    {
+        keyShowTB.setVisible(!keyShowTB.isVisible());
+        keyTB.setVisible(!keyTB.isVisible());
+        ImageView showBtnImg = (ImageView) showKeyBtn.getGraphic();
+        if (keyShowTB.isVisible())
+            showBtnImg.setImage(App.images.get("hide pass")); // Set the image to hide password icon
+        else
+            showBtnImg.setImage(App.images.get("show pass")); // Set the image to show password icon
     }
 
     public void getCarrierFilePath(ActionEvent event) {
