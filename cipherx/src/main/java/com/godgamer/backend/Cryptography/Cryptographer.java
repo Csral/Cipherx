@@ -7,7 +7,7 @@ import java.security.NoSuchAlgorithmException;
 
 public class Cryptographer {
     
-    static String verified(String data, String algorithm) {
+    public static String verified(String data, String algorithm) {
 
         /*
          * 

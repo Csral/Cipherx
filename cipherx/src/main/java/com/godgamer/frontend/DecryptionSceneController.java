@@ -119,7 +119,7 @@ public class DecryptionSceneController implements Initializable {
             //     put("Shift Value", new TextField("0"));
             // }
         }),
-        new Algorithms("Poly1035").addOptions(new HashMap<String, Node>() {
+        new Algorithms("Poly1305").addOptions(new HashMap<String, Node>() {
             // {
             //     put("Label", new Label("Poly1035"));
             //     put("Shift Value", new TextField("0"));
