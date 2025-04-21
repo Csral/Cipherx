@@ -594,7 +594,7 @@ public class EncryptionSceneController implements Initializable{
 
         encryptionTask.setOnFailed(workerStateEvent -> {
             progressDialog.close();
-            Logger.showError("An error occurred during encryption!", "Encryption Error", "Error: " + encryptionTask.getException().getMessage());  
+            Logger.showError("An error occurred during encryption!: " + encryptionTask.getException().getMessage(), "Encryption Error", "Error: " + encryptionTask.getException().getMessage());  
         });
 
         // Show dialog and start task

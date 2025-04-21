@@ -459,7 +459,7 @@ public class DecryptionSceneController implements Initializable {
 
         decryptionTask.setOnFailed(workerStateEvent -> {
             progressDialog.close();
-            Logger.showError("An error occurred during decryption!", "Decryption Error", "Error: " + decryptionTask.getException().getMessage());
+            Logger.showError("An error occurred during decryption!: "+ decryptionTask.getException().getMessage(), "Decryption Error", "Error: " + decryptionTask.getException().getMessage());
             
         });
 
