@@ -24,7 +24,7 @@
       <!-- Advanced Options ScrollPane -->
       <ScrollPane id="advScrollPane" fx:id="scrollPanel" layoutX="72.0" layoutY="296.0" prefHeight="70.0" prefWidth="507.0">
          <content>
-            <VBox fx:id="scrollContentBox" prefHeight="232.0" prefWidth="530.0" />
+            <VBox fx:id="scrollContentBox" prefHeight="232.0" prefWidth="729.0" />
          </content>
       </ScrollPane>
       <RadioButton fx:id="darkRB" layoutX="494.0" layoutY="18.0" mnemonicParsing="false" text="Dark Mode" />

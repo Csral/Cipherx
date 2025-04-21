@@ -133,6 +133,7 @@ public class CryptographySceneController implements Initializable {
      * Executes the cryptographic operation (encryption/decryption).
      */
     public void executeOperation() {
+        scrollContentBox.getChildren().clear();
         String algorithm = algTypeCombo.getValue();
         String output;
         String input = "";
