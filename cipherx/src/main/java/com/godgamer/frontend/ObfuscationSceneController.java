@@ -10,7 +10,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
@@ -25,23 +25,24 @@ public class ObfuscationSceneController implements Initializable {
     @FXML private RadioButton obfuscateRadio;
     @FXML private RadioButton deobfuscateRadio;
     @FXML private ToggleGroup operationGroup;
+    @FXML private Label dataLabel;
 
-    @FXML private ChoiceBox<String> algTypeCombo;
-    @FXML private TextField carrierFileTB, keyShowTB;
+    // @FXML private ChoiceBox<String> algTypeCombo;
+    @FXML private TextField carrierFileTB, keyShowTB, dataValueTB;
     @FXML private Button carrierBrowseBtn;
     @FXML private PasswordField keyTB;
     @FXML private Button executeBtn, showKeyBtn;
     @FXML private ScrollPane scrollPanel;
     @FXML private RadioButton darkRB;
 
-    private final String[] algorithms = {"Meta-Hiding"};
+    // private final String[] algorithms = {"Meta-Hiding"};
 
     private final Hiding hidingTool = new Hiding();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        algTypeCombo.getItems().addAll(algorithms);
-        algTypeCombo.setValue(algorithms[0]);
+        // algTypeCombo.getItems().addAll(algorithms);
+        // algTypeCombo.setValue(algorithms[0]);
 
         darkRB.setSelected(App.isDarkMode);
         darkRB.setOnAction(e -> changeMode());
@@ -91,7 +92,7 @@ public class ObfuscationSceneController implements Initializable {
     }
 
     public void executeOperation() {
-        String algorithm = algTypeCombo.getValue();
+        // String algorithm = algTypeCombo.getValue();
         String carrierFile = carrierFileTB.getText();
         String key = keyTB.getText();
 
@@ -100,30 +101,47 @@ public class ObfuscationSceneController implements Initializable {
             return;
         }
 
-        if ("Meta-Hiding".equals(algorithm)) {
+        // if ("Meta-Hiding".equals(algorithm)) {
             boolean isObfuscate = obfuscateRadio.isSelected();
 
             int resultCode;
             String resultMessage;
 
             if (isObfuscate) {
-                resultCode = hidingTool.streamMetaData(carrierFile, "obfdata", key);
+                resultCode = hidingTool.streamMetaData(carrierFile, key, dataValueTB.getText());
                 resultMessage = (resultCode == 0) ? "Obfuscation successful." : "Obfuscation failed.";
             } else {
-                String extracted = hidingTool.extractMetaData(carrierFile, "obfdata");
-                resultMessage = (extracted != null) ? "Deobfuscated Data: " + extracted : "Failed to extract metadata.";
+                String extracted = hidingTool.extractMetaData(carrierFile, key);
+                resultMessage = (extracted != null) ? "Deobfuscated Data: \n" + extracted : "Failed to extract metadata.";
             }
 
             showOutput(resultMessage);
-        } else {
-            showOutput("Unsupported algorithm selected.");
-        }
+        // } else {
+            // showOutput("Unsupported algorithm selected.");
+        // }
     }
 
     private void showOutput(String message) {
         TextArea textArea = new TextArea(message);
         textArea.setWrapText(true);
         textArea.setEditable(false);
+        
+        // Let it grow inside the scroll pane
+        textArea.setPrefWidth(scrollPanel.getWidth());
+        textArea.setPrefHeight(scrollPanel.getHeight());
+        textArea.setMaxWidth(Double.MAX_VALUE);
+        textArea.setMaxHeight(Double.MAX_VALUE);
         scrollPanel.setContent(textArea);
+    }    
+
+    public void toggleKey(){
+        if(obfuscateRadio.isSelected()){
+            dataValueTB.setVisible(true);
+            dataLabel.setVisible(true);
+        }
+        else{
+            dataValueTB.setVisible(false);
+            dataLabel.setVisible(false);
+        }
     }
 }
