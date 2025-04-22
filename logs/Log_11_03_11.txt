@@ -1,3 +1,0 @@
-11:03:11.613523500; Message;;Successfully Loaded algorithms
-11:03:28.654298100; Message;;Successfully switched to: MainScene
-11:03:32.604674600; Message;;Application is closing.

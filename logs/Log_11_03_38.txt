@@ -1,2 +1,0 @@
-11:03:39.110404800; Message;;Successfully Loaded algorithms
-11:05:31.906236500; Message;;Application is closing.
