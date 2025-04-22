@@ -1,0 +1,4 @@
+21:25:05.650724200; Message;;Successfully Loaded algorithms
+21:25:18.129957; Warning;Input File not specified;Kindly select an input file first!
+21:25:25.967775500; Warning;Password not specified;Kindly enter a password to encrypt the file!
+21:26:33.364146800; Message;;Application is closing.

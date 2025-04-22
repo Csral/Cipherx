@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.godgamer.backend.Encryption.AES;
 import com.godgamer.backend.Encryption.ChaCha20;
+import com.godgamer.backend.Encryption.ECC;
 import com.godgamer.backend.Encryption.RSA;
 
 import javafx.application.Application;
@@ -29,6 +30,7 @@ public class App extends Application {
     public static AES aes; // for encryption and decryption
     public static ChaCha20 chacha20; // for encryption and decryption
     public static RSA rsa; // for encryption and decryption
+    public static ECC ecc;
 
     // Images
     public static Map<String, Image> images = new HashMap<>();
@@ -140,6 +142,7 @@ public class App extends Application {
             aes = new AES();
             chacha20 = new ChaCha20();
             rsa = new RSA();
+            ecc = new ECC();
             Logger.printMessage("Successfully Loaded algorithms");
         } catch (Exception e) {
             Logger.printMessage("Failed to load algorithms: " + e.getMessage());

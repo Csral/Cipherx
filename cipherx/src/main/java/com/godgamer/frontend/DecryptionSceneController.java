@@ -127,6 +127,18 @@ public class DecryptionSceneController implements Initializable {
                 // put("Private Key", keyFileBox);
             }
         }),
+        new Algorithms("ECC").addOptions(new HashMap<String, Node>() {
+            {
+                put("No Advanced Options", new Label(""));
+                // Button browseBtn = new Button("Browse");
+                // browseBtn.setOnAction(e -> getKeyFilePath());
+                // TextField keyFileTB = new TextField();
+                // keyFileTB.setPromptText("Private Key File Path..");
+                // HBox keyFileBox = new HBox(10, keyFileTB, browseBtn);
+                // keyFileBox.setAlignment(Pos.CENTER_LEFT);
+                // put("Private Key", keyFileBox);
+            }
+        })
     }, unverifiedAlgType = {};
 
     private static Algorithms curAlg = null; // this will be used to store the current algorithm selected
@@ -245,10 +257,6 @@ public class DecryptionSceneController implements Initializable {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select a File");
 
-        // fileChooser.getExtensionFilters().add(
-        //     new FileChooser.ExtensionFilter("Binary File", "*.dat")
-        // );
-
         File selectedFile = fileChooser.showOpenDialog(App.scene.getWindow());
 
         if (selectedFile != null) {
@@ -298,13 +306,13 @@ public class DecryptionSceneController implements Initializable {
      * the console.
      */
     public void getKeyFilePath() {
-        if(curAlg.algName.equals("RSA") && passwordTB.getText().isEmpty()) {
+        if((curAlg.algName.equals("RSA") || curAlg.algName.equals("ECC")) && passwordTB.getText().isEmpty()) {
             Logger.showWarning("Kindly enter the password for the private key!", "Password not specified", "Password is empty!");
             return;
         }
         // Create a FileChooser instance
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle(curAlg.algName.equals("RSA") ? "Open Private Key File" : "Open Key File");
+        fileChooser.setTitle((curAlg.algName.equals("RSA") || curAlg.algName.equals("ECC")) ? "Open Private Key File" : "Open Key File");
 
         fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("Key File", "*.key")
@@ -320,6 +328,10 @@ public class DecryptionSceneController implements Initializable {
             {
                 App.rsa.KEY_LOAD_PRIVATE(fileToOpen.getAbsolutePath(), true, passwordTB.getText());
                 Logger.showInfo("Private Key Loaded Successfully!", "Private Key Loaded", "Private Key Loaded Successfully!"); 
+            }
+            if (curAlg.algName.equals("ECC")) {
+                App.ecc.KEY_LOAD_PRIVATE(fileToOpen.getAbsolutePath(), passwordTB.getText());
+                Logger.showInfo("Private Key Loaded Successfully!", "Private Key Loaded", "Private Key Loaded Successfully!");
             }
         } else {
             Logger.printMessage("Open operation cancelled.");
@@ -444,10 +456,11 @@ public class DecryptionSceneController implements Initializable {
                             return App.chacha20.decrypt_poly1305(inputData, filename, password);
                     case "RSA":
                         return App.rsa.decrypt(inputData);
+                    case "ECC":
+                        return App.ecc.decrypt(inputData);
                     default:
                         throw new AssertionError("Unexpected algorithm: " + curAlg.algName);
                 }
-                // return null; // Placeholder (ensure all cases return)
             }
         };
 

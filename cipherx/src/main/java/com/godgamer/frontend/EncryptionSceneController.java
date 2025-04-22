@@ -157,10 +157,32 @@ public class EncryptionSceneController implements Initializable{
                 publicKeyTB.setPromptText("Enter location of public key file...");
                 Button generateKeysBtn = new Button("Generate Keys"), browse = new Button("Browse");
                 generateKeysBtn.setOnAction(e -> {
-                    generateKeys(publicKeyTB, publicKeyNameTB, dos, offLimits);
+                    generateKeys(publicKeyTB, publicKeyNameTB, dos, offLimits, true);
                 });
                 browse.setOnAction(e ->{
-                    browsePublicKey(publicKeyTB);
+                    browsePublicKey(publicKeyTB, true);
+                });
+                dos.setTextFormatter(new TextFormatter<>(integerFilter));
+                HBox publicKeyHbox = new HBox(10, publicKeyTB, browse), generateHbox = new HBox(10, publicKeyNameTB, generateKeysBtn);
+                publicKeyHbox.setAlignment(Pos.CENTER_LEFT); // aligns children to the left
+                put("Public Key", publicKeyHbox);
+                put("Generate Keys (If not alradey done.)", generateHbox);
+                put("Degree of Security", dos);
+                put("Off Limits", offLimits);
+            }
+        }),
+        new Algorithms("ECC").addOptions(new HashMap<String, Node>() {
+            {
+                TextField dos = new TextField("1"), publicKeyTB = new TextField(null), publicKeyNameTB = new TextField(null);
+                publicKeyNameTB.setPromptText("Enter Name of Key file");
+                CheckBox offLimits = new CheckBox();
+                publicKeyTB.setPromptText("Enter location of public key file...");
+                Button generateKeysBtn = new Button("Generate Keys"), browse = new Button("Browse");
+                generateKeysBtn.setOnAction(e -> {
+                    generateKeys(publicKeyTB, publicKeyNameTB, dos, offLimits, false);
+                });
+                browse.setOnAction(e -> {
+                    browsePublicKey(publicKeyTB, false);
                 });
                 dos.setTextFormatter(new TextFormatter<>(integerFilter));
                 HBox publicKeyHbox = new HBox(10, publicKeyTB, browse), generateHbox = new HBox(10, publicKeyNameTB, generateKeysBtn);
@@ -180,12 +202,12 @@ public class EncryptionSceneController implements Initializable{
         // })
     };
 
-    private void generateKeys(TextField publicKeyTB, TextField publicKeyNameTB, TextField dos, CheckBox offLimits) {
+    private void generateKeys(TextField publicKeyTB, TextField publicKeyNameTB, TextField dos, CheckBox offLimits, boolean isRSA) {
         if (passwordTB.getText().isEmpty()) {
             Logger.showWarning("Kindly enter a password to encrypt the file!", "Password not specified", "Password is empty!");
             return;
         }
-        if (publicKeyNameTB.getText().isEmpty()) {
+        if (publicKeyNameTB.getText() == null || publicKeyNameTB.getText().isEmpty()) {
             Logger.showWarning("Kindly enter a name for the public key file!", "Public Key Name not specified", "Public Key Name is empty!");
             return;
         }
@@ -193,8 +215,16 @@ public class EncryptionSceneController implements Initializable{
         try {
             String publickeyName = publicKeyNameTB.getText() + "_public.key";
             String privatekeyName = publicKeyNameTB.getText() + "_private.key";
-            App.rsa.generateKeys(Integer.parseInt(dos.getText()), offLimits.isSelected());
-            App.rsa.KEY_SAVE_SECURE(publickeyName, privatekeyName, true, passwordTB.getText(), Integer.parseInt(dos.getText()), offLimits.isSelected());
+            if (isRSA)
+            {
+                App.rsa.generateKeys(Integer.parseInt(dos.getText()), offLimits.isSelected());
+                App.rsa.KEY_SAVE_SECURE(publickeyName, privatekeyName, true, passwordTB.getText(), Integer.parseInt(dos.getText()), offLimits.isSelected());
+            }
+            else
+            {
+                App.ecc.generateKeys();//Integer.parseInt(dos.getText()), offLimits.isSelected()
+                App.ecc.KEY_SAVE_SECURE(publickeyName, privatekeyName, passwordTB.getText(), Integer.parseInt(dos.getText()), offLimits.isSelected());
+            }
             publicKeyTB.setText(System.getProperty("user.dir") + "\\ " + publickeyName);
             Logger.showInfo("Keys Stored in " + System.getProperty("user.dir"), "RSA Keys Successfully generated", "Keys Generated Successfully!");
         } catch (Exception e) {
@@ -202,9 +232,9 @@ public class EncryptionSceneController implements Initializable{
         }    
     }
 
-    private void browsePublicKey(TextField publicKeyTB)
+    private void browsePublicKey(TextField publicKeyTB, boolean isRSA)
     {
-        if (passwordTB.getText().isEmpty()) {
+        if (passwordTB.getText().isEmpty() && isRSA) {
             Logger.showWarning("Kindly enter a password to encrypt the file!", "Password not specified", "Password is empty!");
             return;
         }
@@ -226,7 +256,10 @@ public class EncryptionSceneController implements Initializable{
                 Logger.printMessage("Selected public key file: " + selectedFile.getAbsolutePath());
                 publicKeyTB.setText(selectedFile.getAbsolutePath());
                 try {
-                    App.rsa.KEY_LOAD_PUBLIC(selectedFile.getAbsolutePath(), true, passwordTB.getText());
+                    if (isRSA)
+                        App.rsa.KEY_LOAD_PUBLIC(selectedFile.getAbsolutePath(), true, passwordTB.getText());
+                    else
+                        App.ecc.KEY_LOAD_PUBLIC(selectedFile.getAbsolutePath());
                     Logger.showInfo("Public Key Loaded Successfully!", "Public Key Loaded", "Public Key Loaded Successfully!");
                 } catch (Exception e) {
                     Logger.showError("An error occurred while loading the Public key!", "Public Key Load Error", "Error: " + e.getMessage());
@@ -366,11 +399,6 @@ public class EncryptionSceneController implements Initializable{
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select a File");
 
-        // Set filters (Optional: restrict file types)
-        // fileChooser.getExtensionFilters().add(
-        //     new FileChooser.ExtensionFilter("Text Files", "*.txt")
-        // );
-
         // Open file dialog and get the selected file
         File selectedFile = fileChooser.showOpenDialog(App.scene.getWindow());
 
@@ -509,6 +537,13 @@ public class EncryptionSceneController implements Initializable{
                 return;
             }       
         }
+        else if (curAlg.algName.equals("ECC"))
+        {
+            if (!App.ecc.isPublicKeyLoaded()) {
+                Logger.showWarning("Kindly generate the keys first!", "Keys not generated", "Keys are not generated!");
+                return;
+            }       
+        }
         LocalTime now = LocalTime.now();
         System.out.println("Input: " + inputTB.getText());
 
@@ -621,6 +656,8 @@ public class EncryptionSceneController implements Initializable{
                         }
                     case "RSA":
                         return App.rsa.encrypt(inputData);
+                    case "ECC":
+                        return App.ecc.encrypt(inputData);
                     default:
                         throw new AssertionError(curAlg.algName + "not yet implemented");
                 }
