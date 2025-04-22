@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.godgamer.backend.Encryption.AES;
 import com.godgamer.backend.Encryption.ChaCha20;
+import com.godgamer.backend.Encryption.RSA;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -27,6 +28,7 @@ public class App extends Application {
     public static boolean isDarkMode = false;
     public static AES aes; // for encryption and decryption
     public static ChaCha20 chacha20; // for encryption and decryption
+    public static RSA rsa; // for encryption and decryption
 
     // Images
     public static Map<String, Image> images = new HashMap<>();
@@ -64,7 +66,7 @@ public class App extends Application {
         scene.getStylesheets().add(css);
 
         // setting up the stage prerequisites
-        Image icon = getImage("logo3", IMAGE_EXTENSIONS.jpg.toString(), false); // for app icon
+        Image icon = getImage("CypherX_Logo", IMAGE_EXTENSIONS.jpg.toString(), false); // for app icon
         stage.getIcons().add(icon);
         stage.setTitle("CipherX");
         stage.setMinWidth(600);
@@ -129,14 +131,17 @@ public class App extends Application {
         images.put("obfuscate", getImage("Obfuscation", App.IMAGE_EXTENSIONS.png.toString(), 88d, 58d, true));
         images.put("cryptography", getImage("Cryptography", App.IMAGE_EXTENSIONS.png.toString(), 88d, 58d, true));
         images.put("steganography", getImage("Steganography", App.IMAGE_EXTENSIONS.png.toString(), 88d, 58d, true));
-        images.put("logo", getImage("logo3", App.IMAGE_EXTENSIONS.jpg.toString(), 200d, 150d, true));
+        images.put("startScreenLight", getImage("CypherX_start_image_light", App.IMAGE_EXTENSIONS.jpg.toString(), 200d, 150d, true));
+        images.put("startScreenDark", getImage("CypherX_start_image", App.IMAGE_EXTENSIONS.jpg.toString(), 200d, 150d, true));
 
         // load AES class
         try { 
             aes = new AES();
             chacha20 = new ChaCha20();
+            rsa = new RSA();
+            Logger.printMessage("Successfully Loaded algorithms");
         } catch (Exception e) {
-            Logger.printMessage("Failed to load AES class: " + e.getMessage());
+            Logger.printMessage("Failed to load algorithms: " + e.getMessage());
         }
 
         // load the app

@@ -114,6 +114,8 @@
 /* Advanced Options (TextArea) */
 .text-area {
     -fx-background-color: #1b2338;
+    -fx-control-inner-background: #1b2338;
+    -fx-prompt-text-fill: LightGray; 
     -fx-border-color: #f5b700;
     -fx-border-radius: 6px;
     -fx-background-radius: 6px;

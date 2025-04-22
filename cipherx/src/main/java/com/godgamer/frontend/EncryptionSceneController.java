@@ -150,6 +150,28 @@ public class EncryptionSceneController implements Initializable{
                 put("Off Limits", new CheckBox());
             }
         }),
+        new Algorithms("RSA").addOptions(new HashMap<String, Node>() {
+            {
+                TextField dos = new TextField("1"), publicKeyTB = new TextField(null), publicKeyNameTB = new TextField(null);
+                publicKeyNameTB.setPromptText("Enter Name of Key file");
+                CheckBox offLimits = new CheckBox();
+                publicKeyTB.setPromptText("Enter location of public key file...");
+                Button generateKeysBtn = new Button("Generate Keys"), browse = new Button("Browse");
+                generateKeysBtn.setOnAction(e -> {
+                    generateKeys(publicKeyTB, publicKeyNameTB, dos, offLimits);
+                });
+                browse.setOnAction(e ->{
+                    browsePublicKey(publicKeyTB);
+                });
+                dos.setTextFormatter(new TextFormatter<>(integerFilter));
+                HBox publicKeyHbox = new HBox(10, publicKeyTB, browse), generateHbox = new HBox(10, publicKeyNameTB, generateKeysBtn);
+                publicKeyHbox.setAlignment(Pos.CENTER_LEFT); // aligns children to the left
+                put("Public Key", publicKeyHbox);
+                put("Generate Keys (If not alradey done.)", generateHbox);
+                put("Degree of Security", dos);
+                put("Off Limits", offLimits);
+            }
+        }),
     }, unverifiedAlgType = {
         // new Algorithms("Shift Value").addOptions(new HashMap<String, Node>() {
         //     {
@@ -158,6 +180,65 @@ public class EncryptionSceneController implements Initializable{
         //     }
         // })
     };
+
+    private void generateKeys(TextField publicKeyTB, TextField publicKeyNameTB, TextField dos, CheckBox offLimits) {
+        if (passwordTB.getText().isEmpty()) {
+            Logger.showWarning("Kindly enter a password to encrypt the file!", "Password not specified", "Password is empty!");
+            return;
+        }
+        if (publicKeyNameTB.getText().isEmpty()) {
+            Logger.showWarning("Kindly enter a name for the public key file!", "Public Key Name not specified", "Public Key Name is empty!");
+            return;
+        }
+        // Generate RSA keys and set them to the text fields
+        try {
+            String publickeyName = publicKeyNameTB.getText() + "_public.key";
+            String privatekeyName = publicKeyNameTB.getText() + "_private.key";
+            App.rsa.generateKeys(Integer.parseInt(dos.getText()), offLimits.isSelected());
+            App.rsa.KEY_SAVE_SECURE(publickeyName, privatekeyName, true, passwordTB.getText(), Integer.parseInt(dos.getText()), offLimits.isSelected());
+            publicKeyTB.setText(System.getProperty("user.dir") + "\\ " + publickeyName);
+            Logger.showInfo("Keys Stored in " + System.getProperty("user.dir"), "RSA Keys Successfully generated", "Keys Generated Successfully!");
+        } catch (Exception e) {
+            Logger.showError("An error occurred while generating RSA keys!", "RSA Key Generation Error", "Error: " + e.getMessage());
+        }    
+    }
+
+    private void browsePublicKey(TextField publicKeyTB)
+    {
+        if (passwordTB.getText().isEmpty()) {
+            Logger.showWarning("Kindly enter a password to encrypt the file!", "Password not specified", "Password is empty!");
+            return;
+        }
+        try{
+            // Create a FileChooser instance
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Select a Public Key File");
+
+            // Set filters (Optional: restrict file types)
+            fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Key Files", "*.key")
+            );
+
+            // Open file dialog and get the selected file
+            File selectedFile = fileChooser.showOpenDialog(App.scene.getWindow());
+
+            // Check if a file was selected and print the path
+            if (selectedFile != null) {
+                Logger.printMessage("Selected public key file: " + selectedFile.getAbsolutePath());
+                publicKeyTB.setText(selectedFile.getAbsolutePath());
+                try {
+                    App.rsa.KEY_LOAD_PUBLIC(selectedFile.getAbsolutePath(), true, passwordTB.getText());
+                    Logger.showInfo("Public Key Loaded Successfully!", "Public Key Loaded", "Public Key Loaded Successfully!");
+                } catch (Exception e) {
+                    Logger.showError("An error occurred while loading the Public key!", "Public Key Load Error", "Error: " + e.getMessage());
+                }    
+            } else {
+                Logger.printMessage("No public key file selected.");
+            }
+        } catch (Exception e) {
+            Logger.showError("An error occurred while browsing the public key!", "Public Key Error", "Error: " + e.getMessage());
+        }
+    }
 
     private static Algorithms curAlg = null; // this will be used to store the current algorithm selected
 
@@ -372,24 +453,6 @@ public class EncryptionSceneController implements Initializable{
     {
         byte[] inputData;
         String password = passwordTB.getText();
-        String encrypted = null;
-
-        // String message = "This is a top secret message!";
-        // try
-        // {
-        //     String message = inputTB.getText();
-        //     byte[] enc = App.aes.encrypt_CBC(message.getBytes(), passwordTB.getText());
-        //     encrypted = Base64.getEncoder().encodeToString(enc);
-
-            
-
-        //     String filename = App.aes.get_active_encrypted_filename(); // You must implement this method
-        //     System.out.println("Filename: " + filename);
-        // }
-        // catch (Exception e)
-        // {
-        //     System.out.println("Something went wrong: " + e);
-        // }
 
         if(inputTB.getText().isEmpty())
         {    
@@ -434,32 +497,15 @@ public class EncryptionSceneController implements Initializable{
             }
             inputData = inputString.getBytes(); // Convert the string to bytes
         }
+        if (curAlg.algName.equals("RSA"))
+        {
+            if (!App.rsa.isPublicKeyLoaded()) {
+                Logger.showWarning("Kindly generate the keys first!", "Keys not generated", "Keys are not generated!");
+                return;
+            }       
+        }
         LocalTime now = LocalTime.now();
         System.out.println("Input: " + inputTB.getText());
-
-        // try {
-        //     switch (curAlg.algName) {
-        //         case "CBC":
-        //             if (password.isEmpty()) {
-        //                 encrypted = Base64.getEncoder().encodeToString(App.aes.encrypt_CBC(inputData)); // Ensure this method returns encrypted bytes
-        //             } else {
-        //                 String degreeOfSecurity = ((TextField) getOptionValue(curAlg, "Degree of Security")).getText();
-        //                 if (degreeOfSecurity != null && !degreeOfSecurity.isEmpty()) {
-        //                     encrypted = Base64.getEncoder().encodeToString(App.aes.encrypt_CBC(inputData, password, Integer.parseInt(degreeOfSecurity), ((CheckBox) getOptionValue(curAlg, "Off Limits")).isSelected()));
-        //                 } else {
-        //                     encrypted = Base64.getEncoder().encodeToString(App.aes.encrypt_CBC(inputData, password));
-        //                 }
-        //             }
-        //             break;
-        //         default:
-        //             throw new AssertionError();
-        //     }
-        // } catch (Exception e) {
-        //     Logger.showError("An error occurred during encryption!", "Encryption Error", "Error: " + e.getMessage());
-        //     return;
-        // }
-
-        // System.out.println("Encrypted: " + encrypted);
 
         // Create progress dialog
         Stage progressDialog = new Stage();
@@ -568,8 +614,10 @@ public class EncryptionSceneController implements Initializable{
                                 return App.chacha20.encrypt_poly1305(inputData, password);
                             }
                         }
+                    case "RSA":
+                        return App.rsa.encrypt(inputData);
                     default:
-                        throw new AssertionError("Unexpected algorithm: " + curAlg.algName);
+                        throw new AssertionError(curAlg.algName + "not yet implemented");
                 }
             }
         };
@@ -580,7 +628,7 @@ public class EncryptionSceneController implements Initializable{
             System.out.println(Duration.between(now, LocalTime.now()).toMillis() + " ms");
             byte[] encryptedData = encryptionTask.getValue();
             if (encryptedData != null) {  
-                Logger.showInfo("Key file stored in " + System.getProperty("user.dir") + App.aes.get_active_encrypted_filename() + "\nEncrypted File Stored in " + outputTB.getText(), "Encryption Success", "Encrypted datakey: " + App.aes.get_active_encrypted_filename());
+                Logger.showInfo("Key file stored in " + System.getProperty("user.dir") + (App.aes.get_active_encrypted_filename() != null ? App.aes.get_active_encrypted_filename() : "") + "\nEncrypted File Stored in " + outputTB.getText(), "Encryption Success", "Encrypted datakey: " + App.aes.get_active_encrypted_filename());
                 try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(outputTB.getText()))) {
                     bos.write(encryptedData);
                     bos.flush();

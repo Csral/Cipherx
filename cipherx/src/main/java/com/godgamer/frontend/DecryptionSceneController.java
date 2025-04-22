@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.security.Key;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -77,53 +78,55 @@ public class DecryptionSceneController implements Initializable {
     private final Algorithms[] verifiedAlgType = {
         new Algorithms("CBC").addOptions(new HashMap<String, Node>() {
             {
-                // TextField dos = new TextField("0");
-                // dos.setTextFormatter(new TextFormatter<>(integerFilter));
-                // put("Degree of Security", dos);
-                // put("Off Limits", new CheckBox());
+                put("No Advanced Options", new Label(""));
             }
         }),
         new Algorithms("ECB").addOptions(new HashMap<String, Node>() {
-            // {
-            //     put("Label", new Label("ECB"));
-            //     put("Shift Value", new TextField("0"));
-            // }
+            {
+                put("No Advanced Options", new Label(""));
+            }
         }),
         new Algorithms("CFB").addOptions(new HashMap<String, Node>() {
-            // {
-            //     put("Label", new Label("CFB"));
-            //     put("Shift Value", new TextField("0"));
-            // }
+            {
+                put("No Advanced Options", new Label(""));
+            }
         }),
         new Algorithms("OFB").addOptions(new HashMap<String, Node>() {
-            // {
-            //     put("Label", new Label("OFB"));
-            //     put("Shift Value", new TextField("0"));
-            // }
+            {
+                put("No Advanced Options", new Label(""));
+            }
         }),
         new Algorithms("CTR").addOptions(new HashMap<String, Node>() {
-            // {
-            //     put("Label", new Label("CTR"));
-            //     put("Shift Value", new TextField("0"));
-            // }
+            {
+                put("No Advanced Options", new Label(""));
+            }
         }),
         new Algorithms("GCM").addOptions(new HashMap<String, Node>() {
-            // {
-            //     put("Label", new Label("GCM"));
-            //     put("Shift Value", new TextField("0"));
-            // }
+            {
+                put("No Advanced Options", new Label(""));
+            }
         }),
         new Algorithms("ChaCha20").addOptions(new HashMap<String, Node>() {
-            // {
-            //     put("Label", new Label("ChaCha20"));
-            //     put("Shift Value", new TextField("0"));
-            // }
+            {
+                put("No Advanced Options", new Label(""));
+            }
         }),
         new Algorithms("Poly1305").addOptions(new HashMap<String, Node>() {
-            // {
-            //     put("Label", new Label("Poly1035"));
-            //     put("Shift Value", new TextField("0"));
-            // }
+            {
+                put("No Advanced Options", new Label(""));
+            }
+        }),
+        new Algorithms("RSA").addOptions(new HashMap<String, Node>() {
+            {
+                put("No Advanced Options", new Label(""));
+                // Button browseBtn = new Button("Browse");
+                // browseBtn.setOnAction(e -> getKeyFilePath());
+                // TextField keyFileTB = new TextField();
+                // keyFileTB.setPromptText("Private Key File Path..");
+                // HBox keyFileBox = new HBox(10, keyFileTB, browseBtn);
+                // keyFileBox.setAlignment(Pos.CENTER_LEFT);
+                // put("Private Key", keyFileBox);
+            }
         }),
     }, unverifiedAlgType = {};
 
@@ -213,6 +216,14 @@ public class DecryptionSceneController implements Initializable {
                 keyLabel.setMinWidth(120); // set consistent width for labels
                 scrollContentBox.getChildren().add(row);
             }
+
+            if(selectedAlg.algName.equals("RSA")) {
+                keyFileTB.setPromptText("Enter the Private Key File Path..");
+                keyFileTB.setText("");
+            } 
+            else {
+                keyFileTB.setPromptText("Enter the Key File Path..");
+            }
         }
 
         if (event != null)
@@ -283,9 +294,13 @@ public class DecryptionSceneController implements Initializable {
      * the console.
      */
     public void getKeyFilePath() {
+        if(curAlg.algName.equals("RSA") && passwordTB.getText().isEmpty()) {
+            Logger.showWarning("Kindly enter the password for the private key!", "Password not specified", "Password is empty!");
+            return;
+        }
         // Create a FileChooser instance
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open Key File");
+        fileChooser.setTitle(curAlg.algName.equals("RSA") ? "Open Private Key File" : "Open Key File");
 
         fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("Key File", "*.key")
@@ -297,20 +312,15 @@ public class DecryptionSceneController implements Initializable {
         if (fileToOpen != null) {
             Logger.printMessage("File to open: " + fileToOpen.getAbsolutePath());
             keyFileTB.setText(fileToOpen.getAbsolutePath());
+            if(curAlg.algName.equals("RSA"))
+            {
+                App.rsa.KEY_LOAD_PRIVATE(fileToOpen.getAbsolutePath(), true, passwordTB.getText());
+                Logger.showInfo("Private Key Loaded Successfully!", "Private Key Loaded", "Private Key Loaded Successfully!"); 
+            }
         } else {
             Logger.printMessage("Open operation cancelled.");
         }
     }
-
-    // public void toggleBrowseBtn() {
-    //     inputTB.setText("");
-    //     browseBtn.setVisible(!browseBtn.isVisible());
-    //     if (browseBtn.isVisible()) {
-    //         inputTB.setPromptText("Browse for file input..."); 
-    //     }else {
-    //         inputTB.setPromptText("Enter the string to encrypt...");
-    //     }
-    // }
 
     private void resetWindow() {
         inputTB.setText("");
@@ -337,8 +347,7 @@ public class DecryptionSceneController implements Initializable {
             Logger.showWarning("Kindly specify the location of output file!", "Output File not specified", "Output is empty!");
             return;
         }
-        // if (browseBtn.isVisible())
-        // {
+  
         File inputFile = new File(inputTB.getText());
         if (!inputFile.exists()) {
             Logger.showWarning("Kindly browse for an existing input file", "Input file does not exist", "Input file does not exist!");
@@ -360,16 +369,12 @@ public class DecryptionSceneController implements Initializable {
             Logger.showError("An error encountered while reading input file!", "Input File Error", "Error reading input file: " + e.getMessage());
             return;
         }
-        // }
-        // else
-        // {
-        //     String inputString = inputTB.getText();
-        //     if (inputString.isEmpty()) {
-        //         Logger.showWarning("Kindly enter a string to encrypt!", "Input String not specified", "Input string is empty!");
-        //         return;
-        //     }
-        //     inputData = inputString.getBytes(StandardCharsets.UTF_8); // Convert the string to bytes
-        // }
+
+        // for rsa
+        if (curAlg.algName.equals("RSA") && !App.rsa.isPrivateKeyLoaded()) {
+            Logger.showWarning("Please load the private key before proceeding.", "Private Key Not Loaded", "Private key is not loaded!");
+            return;
+        }
 
         Logger.printMessage("Decrypting Started..");
         // Create progress dialog
@@ -433,6 +438,8 @@ public class DecryptionSceneController implements Initializable {
                             return App.chacha20.decrypt_poly1305(inputData, filename); // Ensure this method returns encrypted bytes
                         else
                             return App.chacha20.decrypt_poly1305(inputData, filename, password);
+                    case "RSA":
+                        return App.rsa.decrypt(inputData);
                     default:
                         throw new AssertionError("Unexpected algorithm: " + curAlg.algName);
                 }

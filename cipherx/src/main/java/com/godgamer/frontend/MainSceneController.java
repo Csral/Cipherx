@@ -29,7 +29,10 @@ public class MainSceneController implements Initializable {
     {
         App.isDarkMode = !App.isDarkMode;
         darkRB.setSelected(App.isDarkMode);
-        App.changeCSS((App.isDarkMode) ? "MainSceneDark" : "MainSceneLight");     
+        App.changeCSS((App.isDarkMode) ? "MainSceneDark" : "MainSceneLight");  
+
+        mainLogo.setImage(App.images.get((App.isDarkMode) ? "startScreenDark" : "startScreenLight"));
+
     }
 
     public void goToDecrypt() throws IOException {
@@ -47,7 +50,7 @@ public class MainSceneController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        mainLogo.setImage(App.images.get("logo"));
+        mainLogo.setImage(App.images.get("startScreenLight"));
         ImageView img = (ImageView) encryptBtn.getGraphic();
         img.setImage(App.images.get("encrypt"));
         img = (ImageView) decryptBtn.getGraphic();
