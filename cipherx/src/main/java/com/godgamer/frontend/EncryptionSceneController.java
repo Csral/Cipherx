@@ -5,11 +5,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -57,6 +54,8 @@ public class EncryptionSceneController implements Initializable{
     private PasswordField passwordTB;
     @FXML
     private Button browseBtn, showBtn;
+
+    private String selectedExt = null;
 
     // this will be used to store the algorithm type and its advanced options
     private class Algorithms 
@@ -368,15 +367,16 @@ public class EncryptionSceneController implements Initializable{
         fileChooser.setTitle("Select a File");
 
         // Set filters (Optional: restrict file types)
-        fileChooser.getExtensionFilters().add(
-            new FileChooser.ExtensionFilter("Text Files", "*.txt")
-        );
+        // fileChooser.getExtensionFilters().add(
+        //     new FileChooser.ExtensionFilter("Text Files", "*.txt")
+        // );
 
         // Open file dialog and get the selected file
         File selectedFile = fileChooser.showOpenDialog(App.scene.getWindow());
 
         // Check if a file was selected and print the path
         if (selectedFile != null) {
+            selectedExt = selectedFile.getAbsolutePath().substring(selectedFile.getAbsolutePath().lastIndexOf("."));
             Logger.printMessage("Selected file: " + selectedFile.getAbsolutePath());
             inputTB.setText(selectedFile.getAbsolutePath());
         } else {
@@ -391,13 +391,18 @@ public class EncryptionSceneController implements Initializable{
      */
     public void getOutputFilePath()
     {
+        if(selectedExt == null && browseBtn.isVisible())
+        {
+            Logger.showWarning("Kindly select an input file first!", "Input File not specified", "Input is empty!");
+            return;
+        }
         // Create a FileChooser instance
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save a file");
 
         // Set filters (Optional: restrict file types)
         fileChooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("Binary Files", "*.dat")
+                new FileChooser.ExtensionFilter("File", (browseBtn.isVisible())? "*" + selectedExt : "*.txt")
         );
 
         // Show the save file dialog
@@ -513,7 +518,7 @@ public class EncryptionSceneController implements Initializable{
         progressDialog.initOwner(App.scene.getWindow());
         progressDialog.setTitle("Encryption in Progress");
         progressDialog.setResizable(false);
-        progressDialog.setAlwaysOnTop(true);
+        // progressDialog.setAlwaysOnTop(true);
         VBox vbox = new VBox(10, new Label("Encrypting... Please wait."), new ProgressIndicator());
         vbox.setAlignment(Pos.CENTER);
         vbox.setStyle("-fx-padding: 20;");

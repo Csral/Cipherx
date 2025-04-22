@@ -1,0 +1,6 @@
+13:19:02.472487700; Message;;Successfully Loaded algorithms
+13:19:06.928773300; Warning;Input File not specified;Kindly select an input file first!
+13:19:19.968366800; Message;;No file selected.
+13:19:26.908413300; Message;;Selected file: C:\Users\rtama\Pictures\r2_XGB.png
+13:19:45.674792700; Message;;Save operation cancelled.
+13:19:46.856472900; Message;;Application is closing.
