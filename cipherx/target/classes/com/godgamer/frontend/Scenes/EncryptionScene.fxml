@@ -26,7 +26,7 @@
             <Font size="13.0" />
          </font></CheckBox>
       <PasswordField id="passwordTB" fx:id="passwordTB" layoutX="179.0" layoutY="167.0" prefHeight="26.0" prefWidth="150.0" promptText="Encryption Password" />
-      <TextField id="passwordShowTB" fx:id="passwordShowTB" layoutX="179.0" layoutY="167.0" prefHeight="26.0" prefWidth="150.0" />
+      <TextField id="passwordShowTB" fx:id="passwordShowTB" layoutX="179.0" layoutY="167.0" prefHeight="26.0" prefWidth="150.0" promptText="Encryption Password" />
       <Label layoutX="74.0" layoutY="171.0" text="Password">
          <font>
             <Font size="13.0" />
