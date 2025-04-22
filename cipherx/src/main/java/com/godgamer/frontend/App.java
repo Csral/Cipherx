@@ -71,6 +71,7 @@ public class App extends Application {
         stage.setTitle("CipherX");
         stage.setMinWidth(600);
         stage.setMinHeight(400);
+        stage.setResizable(false); // disable resizing the window
         stage.setScene(scene);
 
         // setting up the stage close request

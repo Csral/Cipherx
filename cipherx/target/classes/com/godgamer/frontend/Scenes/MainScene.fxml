@@ -8,23 +8,23 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.godgamer.frontend.MainSceneController">
    <children>
-      <Button id="encBtn" fx:id="encryptBtn" alignment="BOTTOM_CENTER" contentDisplay="TOP" layoutX="366.0" layoutY="177.0" mnemonicParsing="false" onAction="#goToEncrypt" prefHeight="86.0" prefWidth="106.0" text="Encryption">
+      <Button id="encBtn" fx:id="encryptBtn" alignment="BOTTOM_CENTER" contentDisplay="TOP" layoutX="349.0" layoutY="177.0" mnemonicParsing="false" onAction="#goToEncrypt" prefHeight="86.0" prefWidth="106.0" text="Encryption">
          <graphic>
             <ImageView fitHeight="58.0" fitWidth="88.0" pickOnBounds="true" preserveRatio="true" x="1.0" />
          </graphic></Button>
-      <Button id="decBtn" fx:id="decryptBtn" alignment="BOTTOM_CENTER" contentDisplay="TOP" layoutX="140.0" layoutY="177.0" mnemonicParsing="false" onAction="#goToDecrypt" prefHeight="86.0" prefWidth="106.0" text="Decryption">
+      <Button id="decBtn" fx:id="decryptBtn" alignment="BOTTOM_CENTER" contentDisplay="TOP" layoutX="168.0" layoutY="177.0" mnemonicParsing="false" onAction="#goToDecrypt" prefHeight="86.0" prefWidth="106.0" text="Decryption">
          <graphic>
             <ImageView fitHeight="58.0" fitWidth="88.0" pickOnBounds="true" preserveRatio="true" x="1.0" />
          </graphic></Button>
-      <Button id="obfBtn" fx:id="obfuscateBtn" alignment="BOTTOM_CENTER" contentDisplay="TOP" layoutX="247.0" layoutY="297.0" mnemonicParsing="false" onAction="#goToObfuscation" prefHeight="86.0" prefWidth="106.0" text="Obfuscation">
+      <Button id="obfBtn" fx:id="obfuscateBtn" alignment="BOTTOM_CENTER" contentDisplay="TOP" layoutX="349.0" layoutY="297.0" mnemonicParsing="false" onAction="#goToObfuscation" prefHeight="86.0" prefWidth="106.0" text="Obfuscation">
          <graphic>
             <ImageView fitHeight="58.0" fitWidth="88.0" pickOnBounds="true" preserveRatio="true" x="1.0" />
          </graphic></Button>
-      <Button id="steBtn" fx:id="steganographyBtn" alignment="BOTTOM_CENTER" contentDisplay="TOP" layoutX="419.0" layoutY="297.0" mnemonicParsing="false" onAction="#goToSteganography" prefHeight="86.0" prefWidth="106.0" text="steganography">
+      <Button id="steBtn" fx:id="steganographyBtn" alignment="BOTTOM_CENTER" contentDisplay="TOP" layoutX="488.0" layoutY="297.0" mnemonicParsing="false" onAction="#goToSteganography" prefHeight="86.0" prefWidth="106.0" text="steganography" visible="false">
          <graphic>
             <ImageView fitHeight="58.0" fitWidth="88.0" pickOnBounds="true" preserveRatio="true" x="1.0" />
          </graphic></Button>
-      <Button id="cryBtn" fx:id="cryptographyBtn" alignment="BOTTOM_CENTER" contentDisplay="TOP" layoutX="67.0" layoutY="297.0" mnemonicParsing="false" onAction="#goToCryptography" prefHeight="86.0" prefWidth="106.0" text="Cryptography">
+      <Button id="cryBtn" fx:id="cryptographyBtn" alignment="BOTTOM_CENTER" contentDisplay="TOP" layoutX="169.0" layoutY="297.0" mnemonicParsing="false" onAction="#goToCryptography" prefHeight="86.0" prefWidth="106.0" text="Cryptography">
          <graphic>
             <ImageView fitHeight="58.0" fitWidth="88.0" pickOnBounds="true" preserveRatio="true" x="1.0" />
          </graphic></Button>
