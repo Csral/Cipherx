@@ -50,7 +50,12 @@ public class MainSceneController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        mainLogo.setImage(App.images.get("startScreenLight"));
+        if(App.isDarkMode) {
+            mainLogo.setImage(App.images.get("startScreenDark"));
+        } else {
+            mainLogo.setImage(App.images.get("startScreenLight"));
+        }
+        
         ImageView img = (ImageView) encryptBtn.getGraphic();
         img.setImage(App.images.get("encrypt"));
         img = (ImageView) decryptBtn.getGraphic();
