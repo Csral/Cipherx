@@ -166,7 +166,7 @@ public class EncryptionSceneController implements Initializable{
                 HBox publicKeyHbox = new HBox(10, publicKeyTB, browse), generateHbox = new HBox(10, publicKeyNameTB, generateKeysBtn);
                 publicKeyHbox.setAlignment(Pos.CENTER_LEFT); // aligns children to the left
                 put("Public Key", publicKeyHbox);
-                put("Generate Keys (If not alradey done.)", generateHbox);
+                put("Generate Keys (If not already done.)", generateHbox);
                 put("Degree of Security", dos);
                 put("Off Limits", offLimits);
             }
@@ -188,7 +188,7 @@ public class EncryptionSceneController implements Initializable{
                 HBox publicKeyHbox = new HBox(10, publicKeyTB, browse), generateHbox = new HBox(10, publicKeyNameTB, generateKeysBtn);
                 publicKeyHbox.setAlignment(Pos.CENTER_LEFT); // aligns children to the left
                 put("Public Key", publicKeyHbox);
-                put("Generate Keys (If not alradey done.)", generateHbox);
+                put("Generate Keys (If not already done.)", generateHbox);
                 put("Degree of Security", dos);
                 put("Off Limits", offLimits);
             }
