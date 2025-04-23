@@ -202,6 +202,7 @@ public class EncryptionSceneController implements Initializable{
         // })
     };
 
+    @SuppressWarnings("UseSpecificCatch")
     private void generateKeys(TextField publicKeyTB, TextField publicKeyNameTB, TextField dos, CheckBox offLimits, boolean isRSA) {
         if (passwordTB.getText().isEmpty()) {
             Logger.showWarning("Kindly enter a password to encrypt the file!", "Password not specified", "Password is empty!");

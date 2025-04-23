@@ -66,6 +66,7 @@ public class DecryptionSceneController implements Initializable {
     }
 
      // filter to allow only integer values in the text field
+    @SuppressWarnings("unused")
     UnaryOperator<TextFormatter.Change> integerFilter = change -> {
         String newText = change.getControlNewText();
         if (newText.matches("-?\\d*")) { // allows optional negative sign and digits
@@ -182,13 +183,13 @@ public class DecryptionSceneController implements Initializable {
     }
 
     // To get the required element from the advanced options
-    private  Node getOptionValue(Algorithms alg, String optionKey) {
-        if (alg != null && alg.algOptions.containsKey(optionKey)) {
-            return alg.algOptions.get(optionKey);
-        }
+    // private  Node getOptionValue(Algorithms alg, String optionKey) {
+    //     if (alg != null && alg.algOptions.containsKey(optionKey)) {
+    //         return alg.algOptions.get(optionKey);
+    //     }
 
-        return null;
-    }
+    //     return null;
+    // }
 
     private void updateAdvancedOptions(ActionEvent event)
     {

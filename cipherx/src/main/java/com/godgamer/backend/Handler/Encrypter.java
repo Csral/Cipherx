@@ -5,7 +5,9 @@ import java.nio.charset.StandardCharsets;
 public class Encrypter {
  
     private String passwd;
+    @SuppressWarnings("unused")
     private byte[] inf;
+    @SuppressWarnings("unused")
     private int secureGenKeyManipulator;
     private long key = 9842390;
 

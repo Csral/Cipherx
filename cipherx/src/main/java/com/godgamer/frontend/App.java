@@ -55,6 +55,7 @@ public class App extends Application {
         return App.class.getResource("Styles/" + css + ".css").toExternalForm();
     }
 
+    @SuppressWarnings("static-access")
     @Override
     public void start(Stage stage) throws IOException {
         this.stage = stage; // set the stage to the current stage
@@ -107,6 +108,7 @@ public class App extends Application {
         changeCSS(isDarkMode ? "EncDecDark" : "EncDecLight");
     }
 
+    @SuppressWarnings("CallToPrintStackTrace")
     static void setRoot(String fxml, String darkCSS, String lightCSS) throws IOException {
         try {
             Parent root = loadFXML(fxml);
