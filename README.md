@@ -9,7 +9,6 @@
 - **Encryption & Decryption**: AES, RSA, ChaCha20, ECC algorithms
 - **Cryptographic Hashing**: MD2, MD5, SHA-1, SHA-224, SHA-256, SHA-384, SHA-512
 - **Metadata Hiding**: Windows Alternate Data Streams (ADS) and Unix Extended Attributes (xattr)
-- **Steganography**: Embed/extract messages in images
 - **Object-Oriented Design**: Demonstrates SOLID principles via distinct packages:
   - `com.godgamer.backend.Encryption`
   - `com.godgamer.backend.Cryptography`
