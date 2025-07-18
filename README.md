@@ -82,7 +82,7 @@ Contributions are welcome! Please fork the repository, create a feature branch, 
 - Chaturya (Csral) <chaturyasral@gmail.com>
 - Chirayu (Champion2049) <me.chirayu.6@gmail.com>
 - Rtamanyu (God-Gamer-Manyu) <rtamanyu@gmail.com>
-- Ekansh (Ekansh-K) <bl.ai.u4aid24075@bl.students.amrita.edu>
+- Ekansh (Ekansh-K) <ekanshkhullar9@gmail.com>
 
 ## License
 
